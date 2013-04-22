@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Flot: Resize + Growing bug</title>
+	<link href="examples.css" rel="stylesheet" type="text/css">
+	<link href="jquery-ui.min.css" rel="stylesheet" type="text/css">
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="excanvas.min.js"></script><![endif]-->
+	<script language="javascript" type="text/javascript" src="jquery.min.js"></script>
+	<script language="javascript" type="text/javascript" src="jquery-ui.min.js"></script>
+	<script language="javascript" type="text/javascript" src="jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="jquery.flot.resize.js"></script>
+	<script language="javascript" type="text/javascript" src="jquery.flot.grow.custom.js"></script>
+	<script type="text/javascript">
+
+	$(function() {
+
+		var df = [[0,3],[1,5],[2,7],[3,8],[4,4],[5,10],[6,8],[7,5]];
+		var df2 = [[0,4],[1,6],[2,8],[3,9],[4,5],[5,11],[6,9],[7,6],[8,-3],[9,-4],[10,-5]];
+		var data = [
+			{
+				label: "linear",
+				data: df,
+				grow: { stepMode: "linear" }
+			},
+			{
+				label: "plus_minus", data: df2, bars: {show: true},
+				lines: { show: false }, points: { show: false },
+				grow: { stepMode: "linear", stepDirection: "up" }
+			}
+		];
+		var options = {	series: { grow: { active: true, steps: 100  } } };
+
+
+		var $placeholder = $("#placeholder");
+		plot = $.plot($placeholder, $.extend(true, [], data), options);
+		setTimeout(function () {
+			$('.demo-container').toggleClass('demo-container-smaller');
+		}, 500);
+
+		// Add the Flot version string to the footer
+		var footerHtml = [];
+		footerHtml.push(''.concat('<li>', 'Flot ' + $.plot.version, '</li>'))
+		
+		$.plot.plugins.forEach(function (p) {
+			footerHtml.push(''.concat('<li>', p.name, ' ', p.version, '</li>'));
+		});
+
+		$("#footer").append('<ul>' + footerHtml.join('') + '</ul>');
+
+		window.redrawAndResize = function () {
+			plot.shutdown();
+			$placeholder.empty();
+
+			plot = $.plot($placeholder, $.extend(true, [], data), options);
+			setTimeout(function () {
+				$('.demo-container').toggleClass('demo-container-smaller');
+			}, 500);
+		};
+
+	});
+
+	</script>
+</head>
+<body>
+
+	<div id="header">
+		<h2>Resize + Growing plugin</h2>
+	</div>
+
+	<div id="content">
+		
+		<button type="button" onclick="redrawAndResize();">Redraw & Resize</button>
+
+		<div class="demo-container">
+			<div id="placeholder" class="demo-placeholder"></div>
+		</div>
+
+		<p class="message"></p>
+
+		<p>The above demonstrates a bug that occurs in flot charts using Resize and Growing plugin.</p>
+		<p>If the plot placeholder gets resized before the Grow animation ends, then the resulting plot will be invalid. The reason seems to be that, the Resize plugin redraws the plot when a 'resize' event occurs and as a result the Growing plugin continues the animation from there.</p>
+
+	</div>
+
+	<div id="footer">
+		Used in this page:
+	</div>
+
+</body>
+</html>
