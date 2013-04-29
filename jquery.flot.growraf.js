@@ -153,11 +153,15 @@ THE SOFTWARE.
                 var timePassed = Math.min(data.timePassed, data[j].grow.duration);
                 if (timePassed <= data[j].grow.duration) {
                     for (var i = 0; i < data[j].data.length; i++) {
-                        if (growing.stepDirection === "up") {
-                            data[j].data[i][growing.valueIndex] = data[j].dataOrg[i][growing.valueIndex] / data[j].grow.duration * timePassed;
-                        }
-                        else if (growing.stepDirection === "down") {
-                            data[j].data[i][growing.valueIndex] = data[j].dataOrg[i][growing.valueIndex] + (data[j].yaxis.max - data[j].dataOrg[i][growing.valueIndex]) / data[j].grow.duration * (data[j].grow.duration - timePassed);
+                        if (data[j].dataOrg[i][growing.valueIndex] !== null) {
+                            if (growing.stepDirection === "up") {
+                                data[j].data[i][growing.valueIndex] = data[j].dataOrg[i][growing.valueIndex] / data[j].grow.duration * timePassed;
+                            }
+                            else if (growing.stepDirection === "down") {
+                                data[j].data[i][growing.valueIndex] = data[j].dataOrg[i][growing.valueIndex] + (data[j].yaxis.max - data[j].dataOrg[i][growing.valueIndex]) / data[j].grow.duration * (data[j].grow.duration - timePassed);
+                            }
+                        } else {
+                            data[j].dataOrg[i][growing.valueIndex] = null;
                         }
                     }
                 }
@@ -166,11 +170,15 @@ THE SOFTWARE.
                 var timePassed = Math.min(data.timePassed, data[j].grow.duration);
                 if (timePassed <= data[j].grow.duration) {
                     for (var i = 0; i < data[j].data.length; i++) {
-                        if (growing.stepDirection === "up") {
-                            data[j].data[i][growing.valueIndex] = Math.min(data[j].dataOrg[i][growing.valueIndex], data[j].yaxis.max / data[j].grow.duration * timePassed);
-                        }
-                        else if (growing.stepDirection === "down") {
-                            data[j].data[i][growing.valueIndex] = Math.max(data[j].dataOrg[i][growing.valueIndex], data[j].yaxis.max / data[j].grow.duration * (data[j].grow.duration - timePassed));
+                        if (data[j].dataOrg[i][growing.valueIndex] !== null) {
+                            if (growing.stepDirection === "up") {
+                                data[j].data[i][growing.valueIndex] = Math.min(data[j].dataOrg[i][growing.valueIndex], data[j].yaxis.max / data[j].grow.duration * timePassed);
+                            }
+                            else if (growing.stepDirection === "down") {
+                                data[j].data[i][growing.valueIndex] = Math.max(data[j].dataOrg[i][growing.valueIndex], data[j].yaxis.max / data[j].grow.duration * (data[j].grow.duration - timePassed));
+                            }
+                        } else {
+                            data[j].dataOrg[i][growing.valueIndex] = null;
                         }
                     }
                 }
