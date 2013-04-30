@@ -14,8 +14,8 @@
 
 	$(function() {
 
-		var df = [[0,3],[1,5],[2,7],[3,8],[4,4],[5,10],[6,8],[7,5]];
-		var df2 = [[0,4],[1,6],[2,8],[3,9],[4,5],[5,11],[6,9],[7,6],[8,-3],[9,-4],[10,-5]];
+		var df = [[0,3],[1,5],[2,7],[3,8],[4,4],[5,10],[6,8],[7,5],[8,null],[9,5],[10,5]];
+		var df2 = [[0,4],[1,6],[2,8],[3,9],[4,5],[5,11],[6,9],[7,6],[8,null],[9,-4],[10,-5]];
 		var data = [
 			{
 				label: "linear",
@@ -60,9 +60,6 @@
 		</div>
 
 		<p class="message"></p>
-
-		<p>The above demonstrates a bug that occurs in flot charts using Resize and Growing plugin.</p>
-		<p>If the plot placeholder gets resized before the Grow animation ends, then the resulting plot will be invalid. The reason seems to be that, the Resize plugin redraws the plot when a 'resize' event occurs and as a result the Growing plugin continues the animation from there.</p>
 
 	</div>
 
