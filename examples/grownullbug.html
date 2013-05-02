@@ -20,7 +20,7 @@
 			{
 				label: "linear",
 				data: df,
-				grow: { growings:[ { valueIndex:1, stepMode: "linear", stepDirection: "up" } ] }
+				grow: { growings:[ { stepMode: "linear" } ] }
 			},
 			{
 				label: "plus_minus", data: df2, bars: {show: true},
@@ -28,7 +28,7 @@
 				grow: { growings:[ { stepMode: "maximum" }] }
 			}
 		];
-		var options = {	series: { grow: { active: true, duration: 2000  } } };
+		var options = {	series: { grow: { active: true, stepDelay: 20, steps:100} } };
 
 
 		var $placeholder = $("#placeholder");
