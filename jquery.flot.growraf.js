@@ -35,6 +35,7 @@ THE SOFTWARE.
                 //stepDelay: 20,
                 //steps: 100,
                 duration: 1000,
+                valueIndex: 1,
                 growings: [
                     {
                         valueIndex: 1,
@@ -52,6 +53,63 @@ THE SOFTWARE.
         NOT_PLOTTED_YET: 0,
         PLOTTED_SOME_FRAMES: 1,
         PLOTTED_LAST_FRAME: 2
+    };
+
+    var growFunctions = {
+        growNone: function (dataj, timePassed, growing, growPhase) {
+            if (growPhase === GrowPhase.NOT_PLOTTED_YET) {
+                for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
+                    dataj.data[i][valueIndex] = dataj.dataOrg[i][growing.valueIndex];
+                }
+            }
+        },
+        growLinear: function (dataj, timePassed, growing, growPhase) {
+            var normTimePassed = Math.min(timePassed, dataj.grow.duration);
+            for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
+                var originalValue = dataj.dataOrg[i][growing.valueIndex];
+                if (originalValue !== null) {
+                    if (growing.stepDirection === "up") {
+                        dataj.data[i][growing.valueIndex] = originalValue / dataj.grow.duration * normTimePassed;
+                    }
+                    else if (growing.stepDirection === "down") {
+                        dataj.data[i][growing.valueIndex] = originalValue + (dataj.yaxis.max - originalValue) / dataj.grow.duration * (dataj.grow.duration - normTimePassed);
+                    }
+                } else {
+                    dataj.data[i][growing.valueIndex] = null;
+                }
+            }
+        },
+        growMaximum: function (dataj, timePassed, growing, growPhase) {
+            var normTimePassed = Math.min(timePassed, dataj.grow.duration);
+            for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
+                var originalValue = dataj.dataOrg[i][growing.valueIndex];
+                if (originalValue !== null) {
+                    if (growing.stepDirection === "up") {
+                        if (originalValue >= 0) {
+                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.max / dataj.grow.duration * normTimePassed);
+                        } else {
+                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.min / dataj.grow.duration * normTimePassed);
+                        }
+                    }
+                    else if (growing.stepDirection === "down") {
+                        if (originalValue >= 0) {
+                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.max / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
+                        } else {
+                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.min / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
+                        }
+                    }
+                } else {
+                    dataj.data[i][growing.valueIndex] = null;
+                }
+            }
+        },
+        growDelay: function (dataj, timePassed, growing, growPhase) {
+            if (timePassed >= dataj.grow.duration) {
+                for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
+                    dataj.data[i][growing.valueIndex] = dataj.dataOrg[i][growing.valueIndex];
+                }
+            }
+        }
     };
 
     var requestAnimationFrame;
@@ -129,20 +187,19 @@ THE SOFTWARE.
             }
         }
         function growingLoop() {
-            var growing;
             data.timePassed = (+new Date()) - data.startTime;
             for (var j = 0; j < data.length; j++) {
                 var dataj = data[j];
                 for (var g = 0; g < dataj.grow.growings.length; g++) {
-                    growing = dataj.grow.growings[g];
+                    var growing = dataj.grow.growings[g];
                     if (typeof growing.stepMode === "function") {
-                        growing.stepMode(dataj, data.timePassed, growing);
+                        growing.stepMode(dataj, data.timePassed, growing, data.growPhase);
                     }
                     else {
-                        if (growing.stepMode === "linear") { growLinear(dataj); }
-                        else if (growing.stepMode === "maximum") { growMaximum(dataj); }
-                        else if (growing.stepMode === "delay") { growDelay(dataj); }
-                        else { growNone(dataj); }
+                        if (growing.stepMode === "linear") { growFunctions.growLinear(dataj, data.timePassed, growing, data.growPhase); }
+                        else if (growing.stepMode === "maximum") { growFunctions.growMaximum(dataj, data.timePassed, growing, data.growPhase); }
+                        else if (growing.stepMode === "delay") { growFunctions.growDelay(dataj, data.timePassed, growing, data.growPhase); }
+                        else { growFunctions.growNone(dataj, growing); }
                     }
                 }
             }
@@ -159,61 +216,6 @@ THE SOFTWARE.
                 growfunc = null;
             } else {
                 growfunc = requestAnimationFrame(growingLoop);
-            }
-
-            function growNone(dataj) {
-                if (data.growPhase === GrowPhase.NOT_PLOTTED_YET) {
-                    for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
-                        dataj.data[i][valueIndex] = dataj.dataOrg[i][growing.valueIndex];
-                    }
-                }
-            }
-            function growLinear(dataj) {
-                var timePassed = Math.min(data.timePassed, dataj.grow.duration);
-                for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
-                    var originalValue = dataj.dataOrg[i][growing.valueIndex];
-                    if (originalValue !== null) {
-                        if (growing.stepDirection === "up") {
-                            dataj.data[i][growing.valueIndex] = originalValue / dataj.grow.duration * timePassed;
-                        }
-                        else if (growing.stepDirection === "down") {
-                            dataj.data[i][growing.valueIndex] = originalValue + (dataj.yaxis.max - originalValue) / dataj.grow.duration * (dataj.grow.duration - timePassed);
-                        }
-                    } else {
-                        dataj.data[i][growing.valueIndex] = null;
-                    }
-                }
-            }
-            function growMaximum(dataj) {
-                var timePassed = Math.min(data.timePassed, dataj.grow.duration);
-                for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
-                    var originalValue = dataj.dataOrg[i][growing.valueIndex];
-                    if (originalValue !== null) {
-                        if (growing.stepDirection === "up") {
-                            if (originalValue >= 0) {
-                                dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.max / dataj.grow.duration * timePassed);
-                            } else {
-                                dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.min / dataj.grow.duration * timePassed);
-                            }
-                        }
-                        else if (growing.stepDirection === "down") {
-                            if (originalValue >= 0) {
-                                dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.max / dataj.grow.duration * (dataj.grow.duration - timePassed));
-                            } else {
-                                dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.min / dataj.grow.duration * (dataj.grow.duration - timePassed));
-                            }
-                        }
-                    } else {
-                        dataj.data[i][growing.valueIndex] = null;
-                    }
-                }
-            }
-            function growDelay(dataj) {
-                if (data.timePassed >= dataj.grow.duration) {
-                    for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
-                        dataj.data[i][growing.valueIndex] = dataj.dataOrg[i][growing.valueIndex];
-                    }
-                }
             }
         }
         function clone(obj) {
