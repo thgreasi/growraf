@@ -14,18 +14,18 @@
 
 	$(function() {
 
-		var df = [[0,3],[1,5],[2,7],[3,8],[4,4],[5,10],[6,8],[7,5],[8,null],[9,5],[10,5]];
+		var df = [[0,3],[1,5],[2,7],[3,8],[4,4],[5,10],[6,8],[7,5],[8,null],[9,-5],[10,-5]];
 		var df2 = [[0,4],[1,6],[2,8],[3,9],[4,5],[5,11],[6,9],[7,6],[8,null],[9,-4],[10,-5]];
 		var data = [
 			{
 				label: "linear",
 				data: df,
-				grow: { stepMode: "linear" }
+				grow: { growings:[ { stepMode: "linear" } ] }
 			},
 			{
 				label: "plus_minus", data: df2, bars: {show: true},
 				lines: { show: false }, points: { show: false },
-				grow: { stepMode: "linear", stepDirection: "up" }
+				grow: { growings:[ { stepMode: "maximum" }] }
 			}
 		];
 		var options = {	series: { grow: { active: true, duration: 2000  } } };
