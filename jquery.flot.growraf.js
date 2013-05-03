@@ -1,9 +1,11 @@
 /*
-* This is a fork of jquery.flot.grow by Thodoris Greasidis,
-* that implements the growing animations using requestAnimationFrame
-* and fixes varius bugs.
-*
-* The MIT License
+ * The MIT License
+
+This is a fork of jquery.flot.grow by Thodoris Greasidis,
+that implements the growing animations using requestAnimationFrame
+and introduces varius bug fixes and improvements.
+
+Copyright (c) 2013 by Thodoris Greasidis
 
 Copyright (c) 2010,2011,2012, 2013 by Juergen Marsch
 
