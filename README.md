@@ -38,7 +38,7 @@ $.plot($placeholder, [{
 
 Frequently Asked
 ----------------
-*   Does it work on browsers not supporting requestAnimationFrame?
+*   **Does it work on browsers not supporting requestAnimationFrame?**
 
     **Yes**, Growraf checks if the current browser supports requestAnimationFrame (prefixed or not) and (if there is no support) fallbacks to setTimeout.
 
@@ -55,7 +55,8 @@ Frequently Asked
     *   Based on [paulirish's gist](https://gist.github.com/paulirish/1579671) for the setTimeout polyfill.
     *   Does not polyfill requestAnimationFrame for the rest of page, just for growraf.
 
-*   Does it work in oldIE?
+
+*   **Does it work in oldIE?**
 
     **Yes**, as long as exCanvas is provided, it should work.
 
