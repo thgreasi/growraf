@@ -40,7 +40,7 @@ Frequently Asked
 ----------------
 *   Does it work on browsers not supporting requestAnimationFrame?
 
-    Growraf checks if the current browser supports requestAnimationFrame (prefixed or not) and (if there is no support) fallbacks to setTimeout.
+    **Yes**, Growraf checks if the current browser supports requestAnimationFrame (prefixed or not) and (if there is no support) fallbacks to setTimeout.
 
     Some of the browsers that the setTimeout polyfill is used include:
     *   IE <= 8
@@ -57,6 +57,6 @@ Frequently Asked
 
 *   Does it work in oldIE?
 
-    As long as exCanvas is provided it should work.
+    **Yes**, as long as exCanvas is provided, it should work.
 
     **BUT** instead of delivering a choppy animation, I strongly suggest you to disable animations for those browsers by checking if window.G_vmlCanvasManager is defined and setting the series.grow.active property to false.
