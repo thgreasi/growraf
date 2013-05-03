@@ -59,22 +59,22 @@ THE SOFTWARE.
     };
 
     var growFunctions = {
-        growNone: function (dataj, timePassed, growing, growPhase) {
+        none: function (dataj, timePassed, growing, growPhase) {
             if (growPhase === GrowPhase.NOT_PLOTTED_YET) {
                 for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                     dataj.data[i][growing.valueIndex] = dataj.dataOrg[i][growing.valueIndex];
                 }
             }
         },
-        growLinear: function (dataj, timePassed, growing, growPhase) {
+        linear: function (dataj, timePassed, growing, growPhase) {
             var normTimePassed = Math.min(timePassed, dataj.grow.duration);
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
                 if (originalValue !== null) {
-                    if (growing.stepDirection === "up") {
+                    if (growing.stepDirection === 'up') {
                         dataj.data[i][growing.valueIndex] = originalValue / dataj.grow.duration * normTimePassed;
                     }
-                    else if (growing.stepDirection === "down") {
+                    else if (growing.stepDirection === 'down') {
                         dataj.data[i][growing.valueIndex] = originalValue + (dataj.yaxis.max - originalValue) / dataj.grow.duration * (dataj.grow.duration - normTimePassed);
                     }
                 } else {
@@ -82,19 +82,19 @@ THE SOFTWARE.
                 }
             }
         },
-        growMaximum: function (dataj, timePassed, growing, growPhase) {
+        maximum: function (dataj, timePassed, growing, growPhase) {
             var normTimePassed = Math.min(timePassed, dataj.grow.duration);
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
                 if (originalValue !== null) {
-                    if (growing.stepDirection === "up") {
+                    if (growing.stepDirection === 'up') {
                         if (originalValue >= 0) {
                             dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.max / dataj.grow.duration * normTimePassed);
                         } else {
                             dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.min / dataj.grow.duration * normTimePassed);
                         }
                     }
-                    else if (growing.stepDirection === "down") {
+                    else if (growing.stepDirection === 'down') {
                         if (originalValue >= 0) {
                             dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.max / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
                         } else {
@@ -106,7 +106,7 @@ THE SOFTWARE.
                 }
             }
         },
-        growDelay: function (dataj, timePassed, growing, growPhase) {
+        delay: function (dataj, timePassed, growing, growPhase) {
             if (timePassed >= dataj.grow.duration) {
                 for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                     dataj.data[i][growing.valueIndex] = dataj.dataOrg[i][growing.valueIndex];
@@ -126,7 +126,6 @@ THE SOFTWARE.
         var data = null;
         var opt = null;
         var serie = null;
-        //var valueIndex;
         plot.hooks.bindEvents.push(processbindEvents);
         plot.hooks.drawSeries.push(processSeries);
         plot.hooks.shutdown.push(shutdown);
@@ -157,8 +156,6 @@ THE SOFTWARE.
                 }
                 if (done === false) {
                     data = plot.getData();
-                    //data.actualStep = 0;
-                    //data.growingIndex = 0;// not used
                     data.timePassed = 0;
                     data.startTime = +new Date();
                     data.growPhase = GrowPhase.NOT_PLOTTED_YET;
@@ -180,14 +177,12 @@ THE SOFTWARE.
             if (opt.series.grow.active === true) {
                 var d = plot.getData();
                 for (var j = 0; j < data.length; j++) {
-                    //opt.series.grow.steps = Math.max(opt.series.grow.steps, d[j].grow.steps);
                     opt.series.grow.duration = Math.max(opt.series.grow.duration, d[j].grow.duration);
                 }
-                //if (opt.series.grow.stepDelay === 0) { opt.series.grow.stepDelay++; }
 
                 d.startTime = +new Date();
                 growfunc = requestAnimationFrame(growingLoop);
-                if (isPluginRegistered("resize")) {
+                if (isPluginRegistered('resize')) {
                     plot.getPlaceholder().resize(onResize);
                 }
             }
@@ -199,12 +194,22 @@ THE SOFTWARE.
                 var dataj = data[j];
                 for (var g = 0; g < dataj.grow.growings.length; g++) {
                     var growing = dataj.grow.growings[g];
-                    getGrowingFunction(growing)(dataj, data.timePassed, growing, data.growPhase);
+
+                    var func;
+                    if (typeof growing.stepMode === 'function') {
+                        func = growing.stepMode;
+                    } else {
+                        func = growFunctions[growing.stepMode];
+                        if (!func) {
+                            func = growFunctions.none;
+                        }
+                    }
+                    func(dataj, data.timePassed, growing, data.growPhase);
                 }
             }
+
             plt.setData(data);
             plt.draw();
-
 
             if (data.growPhase === GrowPhase.NOT_PLOTTED_YET) {
                 data.growPhase = GrowPhase.PLOTTED_SOME_FRAMES;
@@ -216,18 +221,6 @@ THE SOFTWARE.
                 data.growPhase = GrowPhase.PLOTTED_LAST_FRAME;
                 growfunc = null;
                 plt.getPlaceholder().trigger('growFinished');
-            }
-        }
-
-        function getGrowingFunction(growing) {
-            if (typeof growing.stepMode === "function") {
-                return growing.stepMode;
-            }
-            else {
-                if (growing.stepMode === "linear") { return growFunctions.growLinear; }
-                else if (growing.stepMode === "maximum") { return growFunctions.growMaximum; }
-                else if (growing.stepMode === "delay") { return growFunctions.growDelay; }
-                else { return growFunctions.growNone; }
             }
         }
 
@@ -247,7 +240,7 @@ THE SOFTWARE.
         }
 
         function shutdown(plot, eventHolder) {
-            plot.getPlaceholder().unbind("resize", onResize);
+            plot.getPlaceholder().unbind('resize', onResize);
         }
     }
 
