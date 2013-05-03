@@ -101,6 +101,10 @@ input[type=checkbox] {
 	line-height: 1.2em;
 }
 
+.demo-placeholder-mini {
+	float: left;
+}
+
 .legend table {
 	border-spacing: 5px;
 }

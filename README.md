@@ -15,6 +15,26 @@ Examples
 
 [Growraf + Resize example](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growrafresize.html) in comparison with [Growing + Resize bug](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/resizegrowbug.html)
 
+[Growraf heavy data plots](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/heavyplot_growraf.html) in comparison with [Grow heavy data plots](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/heavyplot_grow.html) *note the time increase with more data/plots*
+
+Extras
+------
+Added a 'growFinished' event that is triggered on the plot's placeholder.
+
+```js
+var $placeholder = $('#placeholder');
+$placeholder.on('growFinished', function () {
+   alert('Grow Animation Finished');
+});
+
+$.plot($placeholder, [{
+        label: "linear",
+        data: [[1,1], [2,2], /*...,*/ [10,10]],
+        grow: { growings:[ { stepMode: "maximum" } ] }
+    }], {
+        series: { grow: { active: true } }
+});
+```
 
 Frequently Asked
 ----------------

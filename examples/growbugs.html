@@ -10,6 +10,7 @@
 	<script language="javascript" type="text/javascript" src="jquery-ui.min.js"></script>
 	<script language="javascript" type="text/javascript" src="jquery.flot.js"></script>
 	<script language="javascript" type="text/javascript" src="jquery.flot.grow.js"></script>
+	<script language="javascript" type="text/javascript" src="usedInPage.js"></script>
 	<script type="text/javascript">
 
 	$(function() {
@@ -35,14 +36,7 @@
 		plot = $.plot($placeholder, $.extend(true, [], data), options);
 
 		// Add the Flot version string to the footer
-		var footerHtml = [];
-		footerHtml.push(''.concat('<li>', 'Flot ' + $.plot.version, '</li>'))
-		
-		$.plot.plugins.forEach(function (p) {
-			footerHtml.push(''.concat('<li>', p.name, ' ', p.version, '</li>'));
-		});
-
-		$("#footer").append('<ul>' + footerHtml.join('') + '</ul>');
+		usedInPage('#footer');
 	});
 
 	</script>
@@ -81,9 +75,7 @@
 
 	</div>
 
-	<div id="footer">
-		Used in this page:
-	</div>
+	<div id="footer"></div>
 
 </body>
 </html>

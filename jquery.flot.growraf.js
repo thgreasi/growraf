@@ -208,11 +208,12 @@ THE SOFTWARE.
                 data.growPhase = GrowPhase.PLOTTED_SOME_FRAMES;
             }
 
-            if (data.timePassed >= opt.series.grow.duration) {
+            if (data.timePassed < opt.series.grow.duration) {
+                growfunc = requestAnimationFrame(growingLoop);
+            } else {
                 data.growPhase = GrowPhase.PLOTTED_LAST_FRAME;
                 growfunc = null;
-            } else {
-                growfunc = requestAnimationFrame(growingLoop);
+                plt.getPlaceholder().trigger('growFinished');
             }
         }
 
@@ -239,6 +240,7 @@ THE SOFTWARE.
             if (growfunc) {
                 cancelAnimationFrame(growfunc);
                 growfunc = null;
+                plt.getPlaceholder().trigger('growFinished');
             }
         }
 
