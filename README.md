@@ -11,7 +11,7 @@ There is a new option named "duration" (in ms) that simplifies the rAF implement
 
 Examples
 --------
-[Growraf example](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growraf.html) in comparison with [Growing minor bugs](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/grownullbug.html)
+[Growraf example](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growraf.html) in comparison with [Growing minor bugs](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growbugs.html)
 
 [Growraf + Resize example](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growrafresize.html) in comparison with [Growing + Resize bug](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/resizegrowbug.html)
 
@@ -49,7 +49,7 @@ Frequently Asked
     *   Firefox < 4.0
     *   Chrome < 10.0
 
-    sources: [caniuse](http://caniuse.com/#search=requestAnimationFrame) and [MDN](https://developer.mozilla.org/en-US/docs/DOM/window.requestAnimationFrame
+    sources: [caniuse](http://caniuse.com/#search=requestAnimationFrame) and [MDN](https://developer.mozilla.org/en-US/docs/DOM/window.requestAnimationFrame)
 
     notes:
     *   Based on [paulirish's gist](https://gist.github.com/paulirish/1579671) for the setTimeout polyfill.
@@ -59,4 +59,4 @@ Frequently Asked
 
     As long as exCanvas is provided it should work.
 
-    **BUT** instead of delivering a choppy animation, I strongly suggest you to disable animations for those browsers by checking if window.G_vmlCanvasManager is defined and set the series.grow.active property to false.
+    **BUT** instead of delivering a choppy animation, I strongly suggest you to disable animations for those browsers by checking if window.G_vmlCanvasManager is defined and setting the series.grow.active property to false.
