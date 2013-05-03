@@ -12,6 +12,6 @@ There is a new option named "duration" (in ms) that simplifies the rAF implement
 
 [Growraf + Resize example](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growrafresize.html)
 
-[Growing + null-data-value bug](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/grownullbug.html)
+[Growing minor bugs](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/grownullbug.html)
 
 [Growing + Resize bug](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/resizegrowbug.html)

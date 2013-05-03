@@ -20,12 +20,12 @@
 			{
 				label: "linear",
 				data: df,
-				grow: { growings:[ { stepMode: "linear" } ] }
+				grow: { growings:[ { stepMode: "maximum" } ] }
 			},
 			{
 				label: "plus_minus", data: df2, bars: {show: true},
 				lines: { show: false }, points: { show: false },
-				grow: { growings:[ { stepMode: "maximum" }] }
+				grow: { growings:[ { stepMode: "maximum", stepDirection: "down" }] }
 			}
 		];
 		var options = {	series: { grow: { active: true, duration: 2000  } } };

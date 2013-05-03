@@ -1,7 +1,8 @@
 /*
 * This is a fork of jquery.flot.grow by Thodoris Greasidis,
-* that implements the growing animation using requestAnimationFrame
-* 
+* that implements the growing animations using requestAnimationFrame
+* and fixes varius bugs.
+*
 * The MIT License
 
 Copyright (c) 2010,2011,2012, 2013 by Juergen Marsch
@@ -59,7 +60,7 @@ THE SOFTWARE.
         growNone: function (dataj, timePassed, growing, growPhase) {
             if (growPhase === GrowPhase.NOT_PLOTTED_YET) {
                 for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
-                    dataj.data[i][valueIndex] = dataj.dataOrg[i][growing.valueIndex];
+                    dataj.data[i][growing.valueIndex] = dataj.dataOrg[i][growing.valueIndex];
                 }
             }
         },
@@ -123,10 +124,11 @@ THE SOFTWARE.
         var data = null;
         var opt = null;
         var serie = null;
-        var valueIndex;
+        //var valueIndex;
         plot.hooks.bindEvents.push(processbindEvents);
         plot.hooks.drawSeries.push(processSeries);
         plot.hooks.shutdown.push(shutdown);
+
         function createDocuTemplate() {
             var z, frm;
             z = $.plot.JUMExample.docuObjectToTemplate(
@@ -142,9 +144,10 @@ THE SOFTWARE.
             frm = $.plot.JUMExample.docuObjectToEdit(z, "");
             return { data: z, form: frm };
         }
+
         function processSeries(plot, canvascontext, series) {
             opt = plot.getOptions();
-            valueIndex = opt.series.grow.valueIndex;
+            var valueIndex = opt.series.grow.valueIndex;
             if (opt.series.grow.active === true) {
                 if (opt.series.grow.debug.active === true) {
                     serie = series;
@@ -153,10 +156,10 @@ THE SOFTWARE.
                 if (done === false) {
                     data = plot.getData();
                     //data.actualStep = 0;
+                    //data.growingIndex = 0;// not used
                     data.timePassed = 0;
                     data.startTime = +new Date();
                     data.growPhase = GrowPhase.NOT_PLOTTED_YET;
-                    //data.growingIndex = 0;
                     for (var j = 0; j < data.length; j++) {
                         var dataj = data[j];
                         dataj.dataOrg = clone(dataj.data);
@@ -169,6 +172,7 @@ THE SOFTWARE.
                 }
             }
         }
+
         function processbindEvents(plot, eventHolder) {
             opt = plot.getOptions();
             if (opt.series.grow.active === true) {
@@ -186,21 +190,14 @@ THE SOFTWARE.
                 }
             }
         }
+
         function growingLoop() {
             data.timePassed = (+new Date()) - data.startTime;
             for (var j = 0; j < data.length; j++) {
                 var dataj = data[j];
                 for (var g = 0; g < dataj.grow.growings.length; g++) {
                     var growing = dataj.grow.growings[g];
-                    if (typeof growing.stepMode === "function") {
-                        growing.stepMode(dataj, data.timePassed, growing, data.growPhase);
-                    }
-                    else {
-                        if (growing.stepMode === "linear") { growFunctions.growLinear(dataj, data.timePassed, growing, data.growPhase); }
-                        else if (growing.stepMode === "maximum") { growFunctions.growMaximum(dataj, data.timePassed, growing, data.growPhase); }
-                        else if (growing.stepMode === "delay") { growFunctions.growDelay(dataj, data.timePassed, growing, data.growPhase); }
-                        else { growFunctions.growNone(dataj, growing); }
-                    }
+                    getGrowingFunction(growing)(dataj, data.timePassed, growing, data.growPhase);
                 }
             }
             plt.setData(data);
@@ -218,34 +215,52 @@ THE SOFTWARE.
                 growfunc = requestAnimationFrame(growingLoop);
             }
         }
+
+        function getGrowingFunction(growing) {
+            if (typeof growing.stepMode === "function") {
+                return growing.stepMode;
+            }
+            else {
+                if (growing.stepMode === "linear") { return growFunctions.growLinear; }
+                else if (growing.stepMode === "maximum") { return growFunctions.growMaximum; }
+                else if (growing.stepMode === "delay") { return growFunctions.growDelay; }
+                else { return growFunctions.growNone; }
+            }
+        }
+
         function clone(obj) {
             if (obj === null || typeof (obj) !== 'object') { return obj; }
             var temp = new obj.constructor();
             for (var key in obj) { temp[key] = clone(obj[key]); }
             return temp;
         }
+
         function onResize() {
             if (growfunc) {
                 cancelAnimationFrame(growfunc);
                 growfunc = null;
             }
         }
+
         function shutdown(plot, eventHolder) {
             plot.getPlaceholder().unbind("resize", onResize);
         }
-        function isPluginRegistered(pluginName) {
-            var plugins = $.plot.plugins;
-
-            for (var i = 0, len = plugins.length; i < len; i++) {
-                var plug = plugins[i];
-
-                if (plug.name === pluginName) {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
+
+    function isPluginRegistered(pluginName) {
+        var plugins = $.plot.plugins;
+
+        for (var i = 0, len = plugins.length; i < len; i++) {
+            var plug = plugins[i];
+
+            if (plug.name === pluginName) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Derived from:
     // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
     // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
     // requestAnimationFrame polyfill by Erik Möller
@@ -281,6 +296,7 @@ THE SOFTWARE.
         requestAnimationFrame = rAF;
         cancelAnimationFrame = cAF;
     }
+
     $.plot.plugins.push({
         init: init,
         options: options,

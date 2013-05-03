@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Flot: Grow null data value bug</title>
+	<title>Flot: Grow minor bugs</title>
 	<link href="examples.css" rel="stylesheet" type="text/css">
 	<link href="jquery-ui.min.css" rel="stylesheet" type="text/css">
 	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="excanvas.min.js"></script><![endif]-->
@@ -20,12 +20,12 @@
 			{
 				label: "linear",
 				data: df,
-				grow: { growings:[ { stepMode: "linear" } ] }
+				grow: { growings:[ { stepMode: "maximum" } ] }
 			},
 			{
 				label: "plus_minus", data: df2, bars: {show: true},
 				lines: { show: false }, points: { show: false },
-				grow: { growings:[ { stepMode: "maximum" }] }
+				grow: { growings:[ { stepMode: "maximum", stepDirection: "down" }] }
 			}
 		];
 		var options = {	series: { grow: { active: true, stepDelay: 20, steps:100} } };
@@ -50,7 +50,7 @@
 <body>
 
 	<div id="header">
-		<h2>Grow null data value bug</h2>
+		<h2>Grow minor bugs</h2>
 	</div>
 
 	<div id="content">
@@ -61,8 +61,23 @@
 
 		<p class="message"></p>
 
-		<p>The above demonstrates a bug that occurs in flot charts using Growing plugin, when a data value is set to null.</p>
-		<p>The problem occurs because in the calculations null (ex: used to discontinue a line) is perceived as a zero value.</p>
+		<p>The above demonstrates some minor bugs that occur in flot charts using the Growing plugin.</p>
+
+		<p>Bugs demonstrated:</p>
+		<ul style="font-size: 0.9em;">
+			<li>
+				<h4 style="font-weight: bold;">Null data value bug</h4>
+				<p style="font-size: 0.9em;color: #444;">The problem occurs when a data value is set to null. Thats because at the calculations, null (ex: used to discontinue a line in flot) is converted to a zero value.</p>
+			</li>
+			<li>
+				<h4 style="font-weight: bold;">Growing Maximum Up with negative values</h4>
+				<p style="font-size: 0.9em;color: #444;">The negative values representations do not animate.</p>
+			</li>
+			<li>
+				<h4 style="font-weight: bold;">Growing Maximum Down with negative values</h4>
+				<p style="font-size: 0.9em;color: #444;">The negative values start to animate from the top of the chart and stop the animation at zero.</p>
+			</li>
+		</ul>
 
 	</div>
 
