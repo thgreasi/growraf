@@ -29,7 +29,7 @@ Frequently Asked
     *   Firefox < 4.0
     *   Chrome < 10.0
 
-    sources: [caniuse](http://caniuse.com/#search=requestAnimationFrame) and [MDN](https://developer.mozilla.org/en-US/docs/DOM/window.requestAnimationFrame
+    sources: [caniuse](http://caniuse.com/#search=requestAnimationFrame) and [MDN](https://developer.mozilla.org/en-US/docs/DOM/window.requestAnimationFrame)
 
     notes:
     *   Based on [paulirish's gist](https://gist.github.com/paulirish/1579671) for the setTimeout polyfill.
