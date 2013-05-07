@@ -233,9 +233,12 @@ THE SOFTWARE.
 
         function onResize() {
             if (growfunc) {
-                cancelAnimationFrame(growfunc);
-                growfunc = null;
-                plt.getPlaceholder().trigger('growFinished');
+                for (var j = 0; j < data.length; j++) {
+                    var dataj = data[j];
+                    dataj.data = clone(dataj.dataOrg);
+                }
+                plot.setData(data);
+                plot.setupGrid();
             }
         }
 
