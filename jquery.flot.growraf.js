@@ -161,7 +161,8 @@ THE SOFTWARE.
                     data.growPhase = GrowPhase.NOT_PLOTTED_YET;
                     for (var j = 0; j < data.length; j++) {
                         var dataj = data[j];
-                        dataj.dataOrg = clone(dataj.data);
+                        // deep cloning the original data
+                        dataj.dataOrg = $.extend(true, [], dataj.data);
                         // set zero or null initial data values.
                         for (var i = 0; i < dataj.data.length; i++) {
                             dataj.data[i][valueIndex] = dataj.dataOrg[i][valueIndex] === null ? null : 0;
@@ -225,18 +226,12 @@ THE SOFTWARE.
             }
         }
 
-        function clone(obj) {
-            if (obj === null || typeof (obj) !== 'object') { return obj; }
-            var temp = new obj.constructor();
-            for (var key in obj) { temp[key] = clone(obj[key]); }
-            return temp;
-        }
-
         function onResize() {
             if (growfunc) {
                 for (var j = 0; j < data.length; j++) {
                     var dataj = data[j];
-                    dataj.data = clone(dataj.dataOrg);
+                    // deep cloning the original data
+                    dataj.data = $.extend(true, [], dataj.dataOrg);
                 }
                 plot.setData(data);
                 plot.setupGrid();
