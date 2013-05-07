@@ -162,6 +162,7 @@ THE SOFTWARE.
                     for (var j = 0; j < data.length; j++) {
                         var dataj = data[j];
                         dataj.dataOrg = clone(dataj.data);
+                        // set zero or null initial data values.
                         for (var i = 0; i < dataj.data.length; i++) {
                             dataj.data[i][valueIndex] = dataj.dataOrg[i][valueIndex] === null ? null : 0;
                         }
