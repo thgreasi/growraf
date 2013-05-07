@@ -58,8 +58,13 @@
 
 			var $placeholder = $(".demo-placeholder");
 			if (plotsNum > 1) {
-				var hw = (100 / Math.ceil(Math.sqrt($placeholder.length))) + '%';
-				$placeholder.css({ width: hw, height: hw });
+				var n = $placeholder.length;
+				var wn = Math.ceil(Math.sqrt(n));
+				var hn = Math.ceil(n/wn);
+
+				var w = (100 / wn) + '%';
+				var h = (100 / hn) + '%';
+				$placeholder.css({ width: w, height: h });
 			}
 
 			var dataSourceSelect = $('#plotsDataScource').val();
