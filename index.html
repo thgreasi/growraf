@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Growraf by thgreasi</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Growraf</h1>
+        <p>A plugin for jquery.flot for smooth animations using requestAnimationFrame</p>
+        <p class="view"><a href="https://github.com/thgreasi/growraf">View the Project on GitHub <small>thgreasi/growraf</small></a></p>
+        <ul>
+          <li><a href="https://github.com/thgreasi/growraf/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/thgreasi/growraf/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/thgreasi/growraf">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Growraf</h1>
+
+<p>Growraf (pronounced grow-rough) is a plugin for <a href="http://www.flotcharts.org">flot charts</a>, that produces smooth animations using requestAnimationFrame wherever possible.</p>
+
+<p>Its a fork of the <a href="https://github.com/jumjum123/JUMFlot">Growing</a> plugin for flot, from Jürgen Marsch.</p>
+
+<p>The API is the same with Growing plugin except from the steps &amp; stepDelay combination.
+There is a new option named "duration" (in ms) that simplifies the rAF implementation and provides greater control.</p>
+
+<h2>Examples</h2>
+
+<p><a href="http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growraf.html">Growraf example</a> in comparison with <a href="http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growbugs.html">Growing minor bugs</a></p>
+
+<p><a href="http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growrafresize.html">Growraf + Resize example</a> in comparison with <a href="http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/resizegrowbug.html">Growing + Resize bug</a></p>
+
+<p><a href="http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/heavyplot_growraf.html">Growraf heavy data plots</a> in comparison with <a href="http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/heavyplot_grow.html">Grow heavy data plots</a> <em>note the time increase with more data/plots</em></p>
+
+<h2>Extras</h2>
+
+<p>Added a 'growFinished' event that is triggered on the plot's placeholder.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">$placeholder</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'#placeholder'</span><span class="p">);</span>
+<span class="nx">$placeholder</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'growFinished'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+   <span class="nx">alert</span><span class="p">(</span><span class="s1">'Grow Animation Finished'</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">$</span><span class="p">.</span><span class="nx">plot</span><span class="p">(</span><span class="nx">$placeholder</span><span class="p">,</span> <span class="p">[{</span>
+        <span class="nx">label</span><span class="o">:</span> <span class="s2">"linear"</span><span class="p">,</span>
+        <span class="nx">data</span><span class="o">:</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="cm">/*...,*/</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">]],</span>
+        <span class="nx">grow</span><span class="o">:</span> <span class="p">{</span> <span class="nx">growings</span><span class="o">:</span><span class="p">[</span> <span class="p">{</span> <span class="nx">stepMode</span><span class="o">:</span> <span class="s2">"maximum"</span> <span class="p">}</span> <span class="p">]</span> <span class="p">}</span>
+    <span class="p">}],</span> <span class="p">{</span>
+        <span class="nx">series</span><span class="o">:</span> <span class="p">{</span> <span class="nx">grow</span><span class="o">:</span> <span class="p">{</span> <span class="nx">active</span><span class="o">:</span> <span class="kc">true</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+
+<h2>Frequently Asked</h2>
+
+<ul>
+<li>
+<p><strong>Does it work on browsers not supporting requestAnimationFrame?</strong></p>
+
+<p><strong>Yes</strong>, Growraf checks if the current browser supports requestAnimationFrame (prefixed or not) and (if there is no support) fallbacks to setTimeout.</p>
+
+<p>Some of the browsers that the setTimeout polyfill is used include:</p>
+
+<ul>
+<li>  IE &lt;= 8</li>
+<li>  Safari &lt;= 5.1</li>
+<li>  Opera (12.1 as of writing this)</li>
+<li>  Firefox &lt; 4.0</li>
+<li>  Chrome &lt; 10.0</li>
+</ul>
+<p>sources: <a href="http://caniuse.com/#search=requestAnimationFrame">caniuse</a> and <a href="https://developer.mozilla.org/en-US/docs/DOM/window.requestAnimationFrame">MDN</a></p>
+
+<p>notes:</p>
+
+<ul>
+<li>  Based on <a href="https://gist.github.com/paulirish/1579671">paulirish's gist</a> for the setTimeout polyfill.</li>
+<li>  Does not polyfill requestAnimationFrame for the rest of page, just for growraf.</li>
+</ul>
+</li>
+<li>
+<p><strong>Does it work in oldIE?</strong></p>
+
+<p><strong>Yes</strong>, as long as exCanvas is provided, it should work.</p>
+
+<p><strong>BUT</strong> instead of delivering a choppy animation, I strongly suggest you to disable animations for those browsers by checking if window.G_vmlCanvasManager is defined and setting the series.grow.active property to false.</p>
+</li>
+</ul>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/thgreasi">thgreasi</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
