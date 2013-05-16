@@ -1,0 +1,37 @@
+.demo-container {
+	position: relative;
+	height: 400px;
+
+	-webkit-transition: all 0.5s;
+	-moz-transition: all 0.5s;
+	transition: all 0.5s;
+}
+
+.demo-placeholder {
+	width: 100%;
+	height: 100%;
+}
+
+.legend table {
+	width: auto;
+}
+
+.demo-container.demo-container-smaller {
+	width: 60%;
+	height: 300px;
+}
+
+.demo-placeholder {
+	width: 100%;
+	height: 100%;
+	font-size: 14px;
+	line-height: 1.2em;
+}
+
+.demo-placeholder-mini {
+	float: left;
+}
+
+.legend table {
+	border-spacing: 5px;
+}

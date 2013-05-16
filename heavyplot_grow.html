@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+	
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="chrome=1">
+		<title>
+			Growraf by thgreasi
+		</title>
+		<link rel="stylesheet" href="stylesheets/styles.css">
+		<link rel="stylesheet" href="stylesheets/examples.css">
+		<link rel="stylesheet" href="stylesheets/pygment_trac.css">
+		<!--[if lte IE 8]>
+			<script language="javascript" type="text/javascript" src="https://raw.github.com/thgreasi/growraf/master/examples/excanvas.min.js"></script>
+		<![endif]-->
+		<script language="javascript" type="text/javascript" src="https://raw.github.com/thgreasi/growraf/master/examples/jquery.min.js"></script>
+		<script language="javascript" type="text/javascript" src="https://raw.github.com/thgreasi/growraf/master/examples/jquery.flot.js"></script>
+		<script language="javascript" type="text/javascript" src="https://raw.github.com/thgreasi/growraf/master/examples/jquery.flot.categories.js"></script>
+		<script language="javascript" type="text/javascript" src="https://raw.github.com/thgreasi/growraf/master/examples/jquery.flot.grow.js"></script>
+		<script language="javascript" type="text/javascript" src="https://raw.github.com/thgreasi/growraf/master/examples/usedInPage.js"></script>
+		<script language="javascript" type="text/javascript" src="https://raw.github.com/thgreasi/growraf/master/examples/heavyplotdata.js"></script>
+		<script type="text/javascript">
+
+		$(function() {
+
+			window.plots = [];
+
+			var options = {
+				legend: { show: false },
+				series: {
+					grow: { active: true, duration: 2000  },
+					bars: { show: true },
+					lines: { show: false },
+					points: { show: false },
+				},
+				xaxis: {
+					mode: "categories",
+					tickLength: 0
+				}
+			};
+
+			var alldata = [];
+			for (var i = 0; i < heavyPlotData.length; i++) {
+				alldata = alldata.concat(heavyPlotData[i]);
+			}
+
+			window.doPlots = function () {
+				if (plots && plots.length > 0)	{
+					for (var i = 0; i < plots.length; i++) {
+						plots[i].shutdown();
+					}
+
+					plots = [];
+					$('.demo-container').empty();
+				}
+
+				var plotsNum = Math.max(1, Number($('#plotsNum').val()));
+				var html = [];
+				for (var i = 0; i < plotsNum; i++) {
+					html.push('<div class="demo-placeholder demo-placeholder-mini"></div>');
+				}
+
+				$('.demo-container').html(html.join(''));
+
+				var $placeholder = $(".demo-placeholder");
+				if (plotsNum > 1) {
+					var n = $placeholder.length;
+					var wn = Math.ceil(Math.sqrt(n));
+					var hn = Math.ceil(n/wn);
+
+					var w = (100 / wn) + '%';
+					var h = (100 / hn) + '%';
+					$placeholder.css({ width: w, height: h });
+				}
+
+				var dataSourceSelect = $('#plotsDataScource').val();
+				var dataSource;
+				if (dataSourceSelect == 'all') {
+					dataSource = alldata;
+				} else {
+					dataSource = heavyPlotData[Math.max(0, Number(dataSourceSelect) - 1 )];
+				}
+
+				$placeholder.each(function () {
+					window.plots.push($.plot($(this), $.extend(true, [], dataSource), options));
+				});
+			};
+
+			// Add the Flot version string to the footer
+			usedInPage('#footer');
+		});
+
+		</script>
+		<script src="javascripts/scale.fix.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<!--[if lt IE 9]>
+			<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<div class="wrapper">
+			<header>
+				<h1>
+					Growraf
+				</h1>
+				<p>
+					A plugin for jquery.flot for smooth animations using requestAnimationFrame
+				</p>
+				<p class="view">
+					<a href="https://github.com/thgreasi/growraf">View the Project on GitHub <small>thgreasi/growraf</small></a>
+				</p>
+				<ul>
+					<li>
+						<a href="https://github.com/thgreasi/growraf/zipball/master">Download <strong>ZIP File</strong></a>
+					</li>
+					<li>
+						<a href="https://github.com/thgreasi/growraf/tarball/master">Download <strong>TAR Ball</strong></a>
+					</li>
+					<li>
+						<a href="https://github.com/thgreasi/growraf">View On <strong>GitHub</strong></a>
+					</li>
+				</ul>
+			</header>
+			<section>
+				<h1>Grow heavy plot example</h1>
+
+				<div id="content">
+
+					<label>
+						Data Source:
+						<select id="plotsDataScource">
+							<option value="1">Heavy plot data 1</option>
+							<option value="2">Heavy plot data 2</option>
+							<option value="3">Heavy plot data 3</option>
+							<option value="all">Heavy plot data ALL</option>
+						</select>
+					</label>
+
+					<label>
+						plots: 
+						<input type="number" id="plotsNum" min="1" value="1">
+					</label>
+
+					<button type="button" onclick="doPlots();">Plot</button>
+
+					<div class="demo-container ui-helper-clearfix">
+						<div class="demo-placeholder demo-placeholder-mini"></div>
+					</div>
+
+					<p class="message">
+						Note the time increase with more data/plots.
+					</p>
+
+				</div>
+
+				<div id="footer"></div>
+			</section>
+		</div>
+		<footer>
+			<p>
+				Project maintained by
+				<a href="https://github.com/thgreasi">thgreasi</a>
+			</p>
+			<p>
+				Hosted on GitHub Pages &mdash; Theme by
+				<a href="https://github.com/orderedlist">orderedlist</a>
+			</p>
+		</footer>
+		<!--[if !IE]><script>fixScale(document);</script><![endif]-->
+			<script type="text/javascript">
+						var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+			</script>
+			<script type="text/javascript">
+						try {
+				var pageTracker = _gat._getTracker("UA-40765812-1");
+				pageTracker._trackPageview();
+			} catch (err) {}
+			</script>
+	</body>
+
+</html>
