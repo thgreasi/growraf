@@ -13,11 +13,7 @@ Examples
 --------
 [Growraf example](http://thgreasi.github.io/growraf/growraf.html) in comparison with [Growing minor bugs](http://thgreasi.github.io/growraf/growbugs.html)
 
-<<<<<<< HEAD
-[Growraf + Resize example](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/resizegrowraf.html) in comparison with [Growing + Resize](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/resizegrowbug.html)
-=======
-[Growraf + Resize example](http://thgreasi.github.io/growraf/growrafresize.html) in comparison with [Growing + Resize bug](http://thgreasi.github.io/growraf/resizegrowbug.html)
->>>>>>> 2011ec8dabcf6764887c1abe1b22460012ec23b7
+[Growraf + Resize example](http://thgreasi.github.io/growraf/resizegrowraf.html) in comparison with [Growing + Resize](http://thgreasi.github.io/growraf/resizegrowbug.html)
 
 [Growraf heavy data plots](http://thgreasi.github.io/growraf/heavyplot_growraf.html) in comparison with [Grow heavy data plots](http://thgreasi.github.io/growraf/heavyplot_grow.html) *note the time increase with more data/plots*
 
