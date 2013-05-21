@@ -13,7 +13,7 @@ Examples
 --------
 [Growraf example](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growraf.html) in comparison with [Growing minor bugs](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growbugs.html)
 
-[Growraf + Resize example](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growrafresize.html) in comparison with [Growing + Resize bug](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/resizegrowbug.html)
+[Growraf + Resize example](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/resizegrowraf.html) in comparison with [Growing + Resize](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/resizegrowbug.html)
 
 [Growraf heavy data plots](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/heavyplot_growraf.html) in comparison with [Grow heavy data plots](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/heavyplot_grow.html) *note the time increase with more data/plots*
 
@@ -32,7 +32,7 @@ $.plot($placeholder, [{
         data: [[1,1], [2,2], /*...,*/ [10,10]],
         grow: { growings:[ { stepMode: "maximum" } ] }
     }], {
-        series: { grow: { active: true } }
+        series: { grow: { active: true, duration: 2000 } }
 });
 ```
 

@@ -30,7 +30,7 @@
 				grow: { stepMode: "linear", stepDirection: "up" }
 			}
 		];
-		var options = {	series: { grow: { active: true, steps: 100  } } };
+		var options = {	series: { grow: { active: true, steps: 300  } } };
 
 
 		var $placeholder = $("#placeholder");
@@ -72,7 +72,7 @@
 		<p class="message"></p>
 
 		<p>The above demonstrates a bug that occurs in flot charts using Resize and Growing plugin.</p>
-		<p>If the plot placeholder gets resized before the Grow animation ends, then the resulting plot will be invalid. The reason seems to be that, the Resize plugin redraws the plot when a 'resize' event occurs and as a result the Growing plugin continues the animation from there.</p>
+		<p>If the plot placeholder gets resized before the Grow animation ends, then the animation will stop and the final state of the chart will be drawn.</p>
 
 	</div>
 

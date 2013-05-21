@@ -21,7 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-
+/*
+ * Added changerequest from Thodoris Greasidis
+ * It makes growing more 
+ */
 (function ($){
     "use strict";
     var pluginName = "grow", pluginVersion = "0.4";
@@ -96,11 +99,14 @@ THE SOFTWARE.
                     opt.series.grow.steps = Math.max(opt.series.grow.steps, d[j].grow.steps);
                 }
                 if(opt.series.grow.stepDelay === 0){ opt.series.grow.stepDelay++;}
-                growfunc = window.setInterval(growing, opt.series.grow.stepDelay);
+                growingLoop();
+                if (isPluginRegistered("resize")) {
+                    plot.getPlaceholder().bind("resize", onResize);
+                }
             }
         }
-        function growing(){
-            var growing;
+        function growingLoop(){
+            var growing, startTime = new Date(), timeDiff;
             if (data.actualStep < opt.series.grow.steps){
                 data.actualStep++;
                 for(var j = 0; j < data.length; j++){
@@ -119,8 +125,10 @@ THE SOFTWARE.
                 }
                 plt.setData(data);
                 plt.draw();
+                timeDiff = new Date() - startTime;
+                growfunc = window.setTimeout(growingLoop, Math.max(0,opt.series.grow.stepDelay - timeDiff));
             }
-            else{ window.clearInterval(growfunc); }
+            else{ window.clearTimeout(growfunc); growfunc = null; }
             function growNone(){
                 if (data.actualStep === 1){
                     for (var i = 0; i < data[j].data.length; i++){
@@ -159,6 +167,22 @@ THE SOFTWARE.
                     }
                 }
             }
+        }
+        function onResize() {
+            if (growfunc) { window.clearTimeout(growfunc); growfunc = null; }
+        }
+        function shutdown(plot, eventHolder) {
+            plot.getPlaceholder().unbind("resize", onResize);
+        }
+        function isPluginRegistered(pluginName) {
+            var plugins = $.plot.plugins;
+            for (var i = 0, len = plugins.length; i < len; i++) {
+                var plug = plugins[i];
+                if (plug.name === pluginName) {
+                    return true;
+                }
+            }
+            return false;
         }
         function clone(obj){
             if(obj === null || typeof(obj) !== 'object'){ return obj;}
