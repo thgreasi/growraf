@@ -11,11 +11,15 @@ There is a new option named "duration" (in ms) that simplifies the rAF implement
 
 Examples
 --------
-[Growraf example](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growraf.html) in comparison with [Growing minor bugs](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/growbugs.html)
+[Growraf example](http://thgreasi.github.io/growraf/growraf.html) in comparison with [Growing minor bugs](http://thgreasi.github.io/growraf/growbugs.html)
 
+<<<<<<< HEAD
 [Growraf + Resize example](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/resizegrowraf.html) in comparison with [Growing + Resize](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/resizegrowbug.html)
+=======
+[Growraf + Resize example](http://thgreasi.github.io/growraf/growrafresize.html) in comparison with [Growing + Resize bug](http://thgreasi.github.io/growraf/resizegrowbug.html)
+>>>>>>> 2011ec8dabcf6764887c1abe1b22460012ec23b7
 
-[Growraf heavy data plots](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/heavyplot_growraf.html) in comparison with [Grow heavy data plots](http://htmlpreview.github.io/?https://github.com/thgreasi/growraf/blob/master/examples/heavyplot_grow.html) *note the time increase with more data/plots*
+[Growraf heavy data plots](http://thgreasi.github.io/growraf/heavyplot_growraf.html) in comparison with [Grow heavy data plots](http://thgreasi.github.io/growraf/heavyplot_grow.html) *note the time increase with more data/plots*
 
 Extras
 ------
