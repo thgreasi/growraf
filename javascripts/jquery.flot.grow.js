@@ -55,6 +55,7 @@ THE SOFTWARE.
         var valueIndex;
         plot.hooks.bindEvents.push(processbindEvents);
         plot.hooks.drawSeries.push(processSeries);
+        plot.hooks.shutdown.push(shutdown);
         function createDocuTemplate(){
             var z,frm;
             z = $.plot.JUMExample.docuObjectToTemplate(
@@ -69,7 +70,7 @@ THE SOFTWARE.
             $.plot.JUMExample.extendDocuObject(z,pluginName);
             frm = $.plot.JUMExample.docuObjectToEdit(z,"");
             return { data:z, form:frm};
-        }		
+        }       
         function processSeries(plot, canvascontext, series){
             opt = plot.getOptions();
             valueIndex = opt.series.grow.valueIndex;
@@ -138,8 +139,8 @@ THE SOFTWARE.
             }
             function growLinear(){
                 if (data.actualStep <= data[j].grow.steps){
-                    for (var i = 0; i < data[j].data.length; i++){	
-                        if (growing.stepDirection === "up"){	
+                    for (var i = 0; i < data[j].data.length; i++){  
+                        if (growing.stepDirection === "up"){    
                             data[j].data[i][growing.valueIndex] = data[j].dataOrg[i][growing.valueIndex] / data[j].grow.steps * data.actualStep;
                         }
                         else if(growing.stepDirection === "down"){
