@@ -45,14 +45,7 @@
 			}
 
 			window.doPlots = function () {
-				if (plots && plots.length > 0)	{
-					for (var i = 0; i < plots.length; i++) {
-						plots[i].shutdown();
-					}
-
-					plots = [];
-					$('.demo-container').empty();
-				}
+				destroyPlots();
 
 				var plotsNum = Math.max(1, Number($('#plotsNum').val()));
 				var html = [];
@@ -84,6 +77,17 @@
 				$placeholder.each(function () {
 					window.plots.push($.plot($(this), $.extend(true, [], dataSource), options));
 				});
+			};
+
+			window.destroyPlots = function () {
+				if (plots && plots.length > 0)	{
+					for (var i = 0; i < plots.length; i++) {
+						plots[i].shutdown();
+					}
+
+					plots = [];
+					$('.demo-container').empty();
+				}
 			};
 
 			// Add the Flot version string to the footer
@@ -142,6 +146,7 @@
 					</label>
 
 					<button type="button" onclick="doPlots();">Plot</button>
+					<button type="button" onclick="destroyPlots();">Destroy</button>
 
 					<div class="demo-container ui-helper-clearfix">
 						<div class="demo-placeholder demo-placeholder-mini"></div>
