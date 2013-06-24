@@ -1,5 +1,5 @@
-Growraf
-=======
+Growraf (Re-Animate)
+====================
 
 Growraf (pronounced grow-rough) is a plugin for [flot charts](http://www.flotcharts.org), that produces smooth animations using requestAnimationFrame wherever possible.
 
