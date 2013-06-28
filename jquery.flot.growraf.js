@@ -178,9 +178,15 @@ THE SOFTWARE.
             opt = plot.getOptions();
             if (opt.series.grow.active === true) {
                 var d = plot.getData();
-                for (var j = 0; j < data.length; j++) {
-                    opt.series.grow.duration = Math.max(opt.series.grow.duration, d[j].grow.duration);
+
+                var maxDuration = opt.series.grow.duration;
+                for (var j = 0; j < d.length; j++) {
+                    var djGrowDuration = d[j].grow.duration;
+                    if (maxDuration < djGrowDuration) {
+                        maxDuration = djGrowDuration;
+                    }
                 }
+                opt.series.grow.duration = maxDuration;
 
                 d.startTime = +new Date();
                 growfunc = requestAnimationFrame(growingLoop);
@@ -240,6 +246,10 @@ THE SOFTWARE.
 
         function shutdown(plot, eventHolder) {
             plot.getPlaceholder().unbind('resize', onResize);
+            if (growfunc) {
+                cancelAnimationFrame(growfunc);
+                growfunc = null;
+            }
         }
     }
 
