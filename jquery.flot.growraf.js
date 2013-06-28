@@ -30,7 +30,7 @@ THE SOFTWARE.
 
 (function ($) {
     "use strict";
-    var pluginName = "growraf", pluginVersion = "0.4";
+    var pluginName = "growraf_reanimate", pluginVersion = "0.4";
     var options = {
         series: {
             grow: {
@@ -70,15 +70,21 @@ THE SOFTWARE.
             var normTimePassed = Math.min(timePassed, dataj.grow.duration);
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
-                if (originalValue !== null) {
-                    if (growing.stepDirection === 'up') {
-                        dataj.data[i][growing.valueIndex] = originalValue / dataj.grow.duration * normTimePassed;
-                    }
-                    else if (growing.stepDirection === 'down') {
-                        dataj.data[i][growing.valueIndex] = originalValue + (dataj.yaxis.max - originalValue) / dataj.grow.duration * (dataj.grow.duration - normTimePassed);
-                    }
+
+                if (dataj.dataOld && originalValue !== null) {
+                    var oldData = dataj.dataOld[i][growing.valueIndex];
+                    dataj.data[i][growing.valueIndex] = oldData + (originalValue - oldData) / dataj.grow.duration * normTimePassed;
                 } else {
-                    dataj.data[i][growing.valueIndex] = null;
+                    if (originalValue !== null) {
+                        if (growing.stepDirection === 'up') {
+                            dataj.data[i][growing.valueIndex] = originalValue / dataj.grow.duration * normTimePassed;
+                        }
+                        else if (growing.stepDirection === 'down') {
+                            dataj.data[i][growing.valueIndex] = originalValue + (dataj.yaxis.max - originalValue) / dataj.grow.duration * (dataj.grow.duration - normTimePassed);
+                        }
+                    } else {
+                        dataj.data[i][growing.valueIndex] = null;
+                    }
                 }
             }
         },
@@ -86,23 +92,29 @@ THE SOFTWARE.
             var normTimePassed = Math.min(timePassed, dataj.grow.duration);
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
-                if (originalValue !== null) {
-                    if (growing.stepDirection === 'up') {
-                        if (originalValue >= 0) {
-                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.max / dataj.grow.duration * normTimePassed);
-                        } else {
-                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.min / dataj.grow.duration * normTimePassed);
-                        }
-                    }
-                    else if (growing.stepDirection === 'down') {
-                        if (originalValue >= 0) {
-                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.max / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
-                        } else {
-                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.min / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
-                        }
-                    }
+
+                if (dataj.dataOld && originalValue !== null) {
+                    var oldData = dataj.dataOld[i][growing.valueIndex];
+                    dataj.data[i][growing.valueIndex] = oldData + (originalValue - oldData) / dataj.grow.duration * normTimePassed;
                 } else {
-                    dataj.data[i][growing.valueIndex] = null;
+                    if (originalValue !== null) {
+                        if (growing.stepDirection === 'up') {
+                            if (originalValue >= 0) {
+                                dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.max / dataj.grow.duration * normTimePassed);
+                            } else {
+                                dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.min / dataj.grow.duration * normTimePassed);
+                            }
+                        }
+                        else if (growing.stepDirection === 'down') {
+                            if (originalValue >= 0) {
+                                dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.max / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
+                            } else {
+                                dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.min / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
+                            }
+                        }
+                    } else {
+                        dataj.data[i][growing.valueIndex] = null;
+                    }
                 }
             }
         },
@@ -125,11 +137,16 @@ THE SOFTWARE.
         var growfunc;
         var plt = plot;
         var data = null;
+        var dataOld = [];
         var opt = null;
         var serie = null;// for debug
         plot.hooks.drawSeries.push(processSeries);
         plot.hooks.bindEvents.push(processbindEvents);
         plot.hooks.shutdown.push(shutdown);
+
+        var originalDraw = plot.draw;
+
+
 
         function createDocuTemplate() {
             var z, frm;
@@ -155,6 +172,24 @@ THE SOFTWARE.
                     serie = series;
                     opt.series.grow.debug.createDocuTemplate = createDocuTemplate;
                 }
+
+                var reanimate = false;
+
+                if (processSeriesDone && growPhase === GrowPhase.PLOTTED_LAST_FRAME) {
+                    processSeriesDone = false;
+                    growPhase = GrowPhase.NOT_PLOTTED_YET;
+                    startTime = 0;
+
+                    data = plot.getData();
+                    for (var j = 0; j < data.length; j++) {
+                        var dataj = data[j];
+                        // deep cloning the original data
+                        dataj.dataOld = dataOld[j];
+                    }
+                    plot.setData(data);
+                    reanimate = true;
+                }
+
                 if (processSeriesDone === false) {
                     data = plot.getData();
                     startTime = +new Date() | 0;
@@ -164,13 +199,21 @@ THE SOFTWARE.
                         var dataj = data[j];
                         // deep cloning the original data
                         dataj.dataOrg = $.extend(true, [], dataj.data);
-                        // set zero or null initial data values.
-                        for (var i = 0; i < dataj.data.length; i++) {
-                            dataj.data[i][valueIndex] = dataj.dataOrg[i][valueIndex] === null ? null : 0;
+                        dataOld[j] = dataj.dataOrg;
+
+                        if (!reanimate) {
+                            // set zero or null initial data values.
+                            for (var i = 0; i < dataj.data.length; i++) {
+                                dataj.data[i][valueIndex] = dataj.dataOrg[i][valueIndex] === null ? null : 0;
+                            }
                         }
                     }
                     plot.setData(data);
                     processSeriesDone = true;
+                }
+
+                if (reanimate) {
+                    setTimeout(function() {processbindEvents(plot, plot.getPlaceholder());},1);
                 }
             }
         }

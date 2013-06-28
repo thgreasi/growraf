@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Flot: Growraf example</title>
+	<link href="examples.css" rel="stylesheet" type="text/css">
+	<link href="jquery-ui.min.css" rel="stylesheet" type="text/css">
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="excanvas.min.js"></script><![endif]-->
+	<script language="javascript" type="text/javascript" src="jquery.min.js"></script>
+	<script language="javascript" type="text/javascript" src="jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="../jquery.flot.growraf.js"></script>
+	<script language="javascript" type="text/javascript" src="usedInPage.js"></script>
+	<script type="text/javascript">
+
+	$(function() {
+
+		var df = [[0,3],[1,5],[2,7],[3,8],[4,4],[5,10],[6,8],[7,5],[8,null],[9,-5],[10,-5]];
+		var df2 = [[0,4],[1,6],[2,8],[3,9],[4,5],[5,11],[6,9],[7,6],[8,null],[9,-4],[10,-5]];
+		var data = [
+			{
+				label: "linear",
+				data: $.extend(true, [], df),
+				grow: { growings:[ { stepMode: "linear" } ] }
+			},
+			{
+				label: "plus_minus", data: $.extend(true, [], df2), 
+				grow: { growings:[ { stepMode: "linear", stepDirection: "down" }] }
+			}
+		];
+		var options = {	series: { grow: { active: true, duration: 2000  } } };
+
+		var $placeholder = $("#placeholder");
+
+		$placeholder.on('growFinished', function (){
+			var duration = (+new Date()) - animationStart;
+			$('.message').html('Finished after: ' + duration + 'ms');
+		});
+
+		var animationStart = +new Date();
+		plot = $.plot($placeholder, $.extend(true, [], data), options);
+
+		// Add the Flot version string to the footer
+		usedInPage('#footer');
+
+		window.reanimate = function () {
+			dftemp = df;
+			df = df2;
+			df2 = dftemp;
+
+			var data = [
+				{
+					label: "linear",
+					data: $.extend(true, [], df),
+					grow: { growings:[ { stepMode: "linear" } ] }
+				},
+				{
+					label: "plus_minus", data: $.extend(true, [], df2),
+					grow: { growings:[ { stepMode: "linear", stepDirection: "down" }] }
+				}
+			];
+
+			plot.setData(data);
+			plot.draw();
+		}
+	});
+
+	</script>
+</head>
+<body>
+
+	<div id="header">
+		<h2>Growraf example</h2>
+	</div>
+
+	<div id="content">
+		<button type="button" onclick="reanimate()">re-animate</button>
+		<div class="demo-container">
+			<div id="placeholder" class="demo-placeholder"></div>
+		</div>
+
+		<p class="message"></p>
+
+	</div>
+
+	<div id="footer"></div>
+
+</body>
+</html>
