@@ -126,8 +126,8 @@ THE SOFTWARE.
         var data = null;
         var opt = null;
         var serie = null;
-        plot.hooks.bindEvents.push(processbindEvents);
         plot.hooks.drawSeries.push(processSeries);
+        plot.hooks.bindEvents.push(processbindEvents);
         plot.hooks.shutdown.push(shutdown);
 
         function createDocuTemplate() {
