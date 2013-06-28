@@ -120,12 +120,13 @@ THE SOFTWARE.
     polyfillLocalRequestAnimationFrame();
 
     function init(plot) {
-        var done = false;
+        var processSeriesDone = false;
+        var startTime = 0, timePassed = 0, growPhase = GrowPhase.NOT_PLOTTED_YET;
         var growfunc;
         var plt = plot;
         var data = null;
         var opt = null;
-        var serie = null;
+        var serie = null;// for debug
         plot.hooks.drawSeries.push(processSeries);
         plot.hooks.bindEvents.push(processbindEvents);
         plot.hooks.shutdown.push(shutdown);
@@ -154,11 +155,11 @@ THE SOFTWARE.
                     serie = series;
                     opt.series.grow.debug.createDocuTemplate = createDocuTemplate;
                 }
-                if (done === false) {
+                if (processSeriesDone === false) {
                     data = plot.getData();
-                    data.timePassed = 0;
-                    data.startTime = +new Date();
-                    data.growPhase = GrowPhase.NOT_PLOTTED_YET;
+                    startTime = +new Date() | 0;
+                    timePassed = 0;
+                    growPhase = GrowPhase.NOT_PLOTTED_YET;
                     for (var j = 0; j < data.length; j++) {
                         var dataj = data[j];
                         // deep cloning the original data
@@ -169,7 +170,7 @@ THE SOFTWARE.
                         }
                     }
                     plot.setData(data);
-                    done = true;
+                    processSeriesDone = true;
                 }
             }
         }
@@ -188,7 +189,7 @@ THE SOFTWARE.
                 }
                 opt.series.grow.duration = maxDuration;
 
-                d.startTime = +new Date();
+                startTime = +new Date() | 0;
                 growfunc = requestAnimationFrame(growingLoop);
                 if (isPluginRegistered('resize')) {
                     plot.getPlaceholder().resize(onResize);
@@ -197,8 +198,8 @@ THE SOFTWARE.
         }
 
         function growingLoop() {
-            data.timePassed = (+new Date()) - data.startTime;
-            for (var j = 0; j < data.length; j++) {
+            timePassed = (+new Date()) - startTime | 0;
+            for (var j = 0, datalen = data.length; j < datalen; j++) {
                 var dataj = data[j];
                 for (var g = 0; g < dataj.grow.growings.length; g++) {
                     var growing = dataj.grow.growings[g];
@@ -212,21 +213,21 @@ THE SOFTWARE.
                             func = growFunctions.none;
                         }
                     }
-                    func(dataj, data.timePassed, growing, data.growPhase);
+                    func(dataj, timePassed, growing, growPhase);
                 }
             }
 
             plt.setData(data);
             plt.draw();
 
-            if (data.growPhase === GrowPhase.NOT_PLOTTED_YET) {
-                data.growPhase = GrowPhase.PLOTTED_SOME_FRAMES;
+            if (growPhase === GrowPhase.NOT_PLOTTED_YET) {
+                growPhase = GrowPhase.PLOTTED_SOME_FRAMES;
             }
 
-            if (data.timePassed < opt.series.grow.duration) {
+            if (timePassed < opt.series.grow.duration) {
                 growfunc = requestAnimationFrame(growingLoop);
             } else {
-                data.growPhase = GrowPhase.PLOTTED_LAST_FRAME;
+                growPhase = GrowPhase.PLOTTED_LAST_FRAME;
                 growfunc = null;
                 plt.getPlaceholder().trigger('growFinished');
             }
