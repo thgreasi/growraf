@@ -71,20 +71,15 @@ THE SOFTWARE.
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
 
-                if (dataj.dataOld && originalValue !== null) {
-                    var oldData = dataj.dataOld[i][growing.valueIndex];
-                    dataj.data[i][growing.valueIndex] = oldData + (originalValue - oldData) / dataj.grow.duration * normTimePassed;
-                } else {
-                    if (originalValue !== null) {
-                        if (growing.stepDirection === 'up') {
-                            dataj.data[i][growing.valueIndex] = originalValue / dataj.grow.duration * normTimePassed;
-                        }
-                        else if (growing.stepDirection === 'down') {
-                            dataj.data[i][growing.valueIndex] = originalValue + (dataj.yaxis.max - originalValue) / dataj.grow.duration * (dataj.grow.duration - normTimePassed);
-                        }
-                    } else {
-                        dataj.data[i][growing.valueIndex] = null;
+                if (originalValue !== null) {
+                    if (growing.stepDirection === 'up') {
+                        dataj.data[i][growing.valueIndex] = originalValue / dataj.grow.duration * normTimePassed;
                     }
+                    else if (growing.stepDirection === 'down') {
+                        dataj.data[i][growing.valueIndex] = originalValue + (dataj.yaxis.max - originalValue) / dataj.grow.duration * (dataj.grow.duration - normTimePassed);
+                    }
+                } else {
+                    dataj.data[i][growing.valueIndex] = null;
                 }
             }
         },
@@ -93,28 +88,23 @@ THE SOFTWARE.
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
 
-                if (dataj.dataOld && originalValue !== null) {
-                    var oldData = dataj.dataOld[i][growing.valueIndex];
-                    dataj.data[i][growing.valueIndex] = oldData + (originalValue - oldData) / dataj.grow.duration * normTimePassed;
-                } else {
-                    if (originalValue !== null) {
-                        if (growing.stepDirection === 'up') {
-                            if (originalValue >= 0) {
-                                dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.max / dataj.grow.duration * normTimePassed);
-                            } else {
-                                dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.min / dataj.grow.duration * normTimePassed);
-                            }
+                if (originalValue !== null) {
+                    if (growing.stepDirection === 'up') {
+                        if (originalValue >= 0) {
+                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.max / dataj.grow.duration * normTimePassed);
+                        } else {
+                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.min / dataj.grow.duration * normTimePassed);
                         }
-                        else if (growing.stepDirection === 'down') {
-                            if (originalValue >= 0) {
-                                dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.max / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
-                            } else {
-                                dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.min / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
-                            }
-                        }
-                    } else {
-                        dataj.data[i][growing.valueIndex] = null;
                     }
+                    else if (growing.stepDirection === 'down') {
+                        if (originalValue >= 0) {
+                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.max / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
+                        } else {
+                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.min / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
+                        }
+                    }
+                } else {
+                    dataj.data[i][growing.valueIndex] = null;
                 }
             }
         },
@@ -122,6 +112,19 @@ THE SOFTWARE.
             if (timePassed >= dataj.grow.duration) {
                 for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                     dataj.data[i][growing.valueIndex] = dataj.dataOrg[i][growing.valueIndex];
+                }
+            }
+        },
+        reanimate: function (dataj, timePassed, growing, growPhase) {
+            var normTimePassed = Math.min(timePassed, dataj.grow.duration);
+            for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
+                var targetValue = dataj.dataOrg[i][growing.valueIndex];
+
+                if (targetValue === null) {
+                    dataj.data[i][growing.valueIndex] = null;
+                } else if (dataj.dataOld) {
+                    var oldData = dataj.dataOld[i][growing.valueIndex];
+                    dataj.data[i][growing.valueIndex] = oldData + (targetValue - oldData) / dataj.grow.duration * normTimePassed;
                 }
             }
         }
@@ -176,15 +179,15 @@ THE SOFTWARE.
                 var reanimate = false;
 
                 if (processSeriesDone && growPhase === GrowPhase.PLOTTED_LAST_FRAME) {
+                    // reset animation state
                     processSeriesDone = false;
                     growPhase = GrowPhase.NOT_PLOTTED_YET;
                     startTime = 0;
 
+                    // restore old data from the tempory variable to the actual plot data
                     data = plot.getData();
-                    for (var j = 0; j < data.length; j++) {
-                        var dataj = data[j];
-                        // deep cloning the original data
-                        dataj.dataOld = dataOld[j];
+                    for (var j = 0; j < dataOld.length; j++) {
+                        data[j].dataOld = dataOld[j];
                     }
                     plot.setData(data);
                     reanimate = true;
@@ -195,11 +198,13 @@ THE SOFTWARE.
                     startTime = +new Date() | 0;
                     timePassed = 0;
                     growPhase = GrowPhase.NOT_PLOTTED_YET;
+                    dataOld = [];
                     for (var j = 0; j < data.length; j++) {
                         var dataj = data[j];
                         // deep cloning the original data
                         dataj.dataOrg = $.extend(true, [], dataj.data);
-                        dataOld[j] = dataj.dataOrg;
+                        // keep the data in a temporary array, in case a reanimation is requested
+                        dataOld.push(dataj.dataOrg);
 
                         if (!reanimate) {
                             // set zero or null initial data values.
@@ -248,7 +253,9 @@ THE SOFTWARE.
                     var growing = dataj.grow.growings[g];
 
                     var func;
-                    if (typeof growing.stepMode === 'function') {
+                    if (dataj.dataOld && dataj.dataOld.length > 0) {
+                        func = growFunctions.reanimate;
+                    } else if (typeof growing.stepMode === 'function') {
                         func = growing.stepMode;
                     } else {
                         func = growFunctions[growing.stepMode];
