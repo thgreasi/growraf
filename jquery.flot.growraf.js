@@ -30,7 +30,7 @@ THE SOFTWARE.
 
 (function ($) {
     "use strict";
-    var pluginName = "growraf_reanimate", pluginVersion = "0.4";
+    var pluginName = "growraf_reanimate", pluginVersion = "0.4.5";
     var options = {
         series: {
             grow: {
@@ -43,7 +43,8 @@ THE SOFTWARE.
                     {
                         valueIndex: 1,
                         stepMode: "linear",
-                        stepDirection: "up"
+                        stepDirection: "up",
+                        reanimate: "continue"
                     }
                 ],
                 debug: { active: false, createDocuTemplate: null }
@@ -135,20 +136,21 @@ THE SOFTWARE.
     polyfillLocalRequestAnimationFrame();
 
     function init(plot) {
+        // State variables
         var processSeriesDone = false;
+        var initGrowingLoop = true;
         var startTime = 0, timePassed = 0, growPhase = GrowPhase.NOT_PLOTTED_YET;
+        var dataOld = [];
+
         var growfunc;
         var plt = plot;
         var data = null;
-        var dataOld = [];
         var opt = null;
         var serie = null;// for debug
         plot.hooks.drawSeries.push(processSeries);
+        plot.hooks.draw.push(drawDone);
         plot.hooks.bindEvents.push(processbindEvents);
         plot.hooks.shutdown.push(shutdown);
-
-        var originalDraw = plot.draw;
-
 
 
         function createDocuTemplate() {
@@ -177,7 +179,6 @@ THE SOFTWARE.
                 }
 
                 var reanimate = false;
-
                 if (processSeriesDone && growPhase === GrowPhase.PLOTTED_LAST_FRAME) {
                     // reset animation state
                     processSeriesDone = false;
@@ -190,7 +191,9 @@ THE SOFTWARE.
                         data[j].dataOld = dataOld[j];
                     }
                     plot.setData(data);
+                    
                     reanimate = true;
+                    initGrowingLoop = true;
                 }
 
                 if (processSeriesDone === false) {
@@ -216,32 +219,40 @@ THE SOFTWARE.
                     plot.setData(data);
                     processSeriesDone = true;
                 }
-
-                if (reanimate) {
-                    setTimeout(function() {processbindEvents(plot, plot.getPlaceholder());},1);
-                }
             }
         }
 
-        function processbindEvents(plot, eventHolder) {
+        function drawDone(plot, canvascontext) {
+            if (initGrowingLoop === true) {
+                initiateGrowingLoop(plot);
+            }
+        }
+
+        function initiateGrowingLoop(plot) {
             opt = plot.getOptions();
             if (opt.series.grow.active === true) {
-                var d = plot.getData();
-
-                var maxDuration = opt.series.grow.duration;
-                for (var j = 0; j < d.length; j++) {
-                    var djGrowDuration = d[j].grow.duration;
-                    if (maxDuration < djGrowDuration) {
-                        maxDuration = djGrowDuration;
-                    }
-                }
-                opt.series.grow.duration = maxDuration;
+                calculateMaxDuration(plot.getData(), opt);
 
                 startTime = +new Date() | 0;
                 growfunc = requestAnimationFrame(growingLoop);
-                if (isPluginRegistered('resize')) {
-                    plot.getPlaceholder().resize(onResize);
+            }
+            initGrowingLoop = false;
+        }
+
+        function calculateMaxDuration(data, opt) {
+            var maxDuration = opt.series.grow.duration;
+            for (var j = 0, datalen = data.length; j < datalen; j++) {
+                var datajDuration = data[j].grow.duration;
+                if (maxDuration < datajDuration) {
+                    maxDuration = datajDuration;
                 }
+            }
+            opt.series.grow.duration = maxDuration;
+        }
+
+        function processbindEvents(plot, eventHolder) {
+            if (isPluginRegistered('resize')) {
+                plot.getPlaceholder().resize(onResize);
             }
         }
 
@@ -249,19 +260,25 @@ THE SOFTWARE.
             timePassed = (+new Date()) - startTime | 0;
             for (var j = 0, datalen = data.length; j < datalen; j++) {
                 var dataj = data[j];
-                for (var g = 0; g < dataj.grow.growings.length; g++) {
-                    var growing = dataj.grow.growings[g];
+                var isReAnimation = dataj.dataOld && dataj.dataOld.length > 0;
 
+                for (var g = 0, glen = dataj.grow.growings.length; g < glen; g++) {
+                    var growing = dataj.grow.growings[g];
                     var func;
-                    if (dataj.dataOld && dataj.dataOld.length > 0) {
-                        func = growFunctions.reanimate;
+
+                    if (isReAnimation && growing.reanimate !== 'reinit') {
+                        if (typeof growing.reanimate === 'function') {
+                            func = growing.reanimate;
+                        } if (growing.reanimate === 'continue') {
+                            func = growFunctions.reanimate;
+                        } else {// if (growing.reanimate === 'none')
+                            func = growFunctions.none;
+                        }
                     } else if (typeof growing.stepMode === 'function') {
                         func = growing.stepMode;
                     } else {
-                        func = growFunctions[growing.stepMode];
-                        if (!func) {
-                            func = growFunctions.none;
-                        }
+                        // if stepMode does not exist, use 'none'
+                        func = growFunctions[growing.stepMode] || growFunctions.none;
                     }
                     func(dataj, timePassed, growing, growPhase);
                 }

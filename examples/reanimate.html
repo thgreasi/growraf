@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Flot: Growraf example</title>
+	<title>Flot: Growraf reanimate example</title>
 	<link href="examples.css" rel="stylesheet" type="text/css">
 	<link href="jquery-ui.min.css" rel="stylesheet" type="text/css">
 	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="excanvas.min.js"></script><![endif]-->
@@ -51,7 +51,7 @@
 				{
 					label: "linear",
 					data: $.extend(true, [], df),
-					grow: { growings:[ { stepMode: "linear" } ] }
+					grow: { growings:[ { stepMode: "linear", reanimate: 'reinit' } ] }
 				},
 				{
 					label: "plus_minus", data: $.extend(true, [], df2),
@@ -62,6 +62,7 @@
 			animationStart = +new Date();
 
 			plot.setData(data);
+			plot.setupGrid();
 			plot.draw();
 
 		}
@@ -72,7 +73,7 @@
 <body>
 
 	<div id="header">
-		<h2>Growraf example</h2>
+		<h2>Growraf reanimate example</h2>
 	</div>
 
 	<div id="content">
