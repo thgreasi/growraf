@@ -39,6 +39,7 @@ THE SOFTWARE.
                 //steps: 100,
                 duration: 1000,
                 valueIndex: 1,
+                reanimate: true,
                 growings: [
                     {
                         valueIndex: 1,
@@ -179,7 +180,8 @@ THE SOFTWARE.
                 }
 
                 var reanimate = false;
-                if (processSeriesDone && growPhase === GrowPhase.PLOTTED_LAST_FRAME) {
+                var j = 0;
+                if (opt.series.grow.reanimate && growPhase === GrowPhase.PLOTTED_LAST_FRAME) {
                     // reset animation state
                     processSeriesDone = false;
                     growPhase = GrowPhase.NOT_PLOTTED_YET;
@@ -187,22 +189,26 @@ THE SOFTWARE.
 
                     // restore old data from the tempory variable to the actual plot data
                     data = plot.getData();
-                    for (var j = 0; j < dataOld.length; j++) {
+                    var minLen = Math.min(data.length, dataOld.length);
+                    for (j = 0; j < minLen; j++) {
                         data[j].dataOld = dataOld[j];
                     }
-                    plot.setData(data);
-                    
+
                     reanimate = true;
                     initGrowingLoop = true;
                 }
 
-                if (processSeriesDone === false) {
-                    data = plot.getData();
-                    startTime = +new Date() | 0;
-                    timePassed = 0;
+                if (!processSeriesDone) {
+                    // do not refetch the data in case of a reanimate,
+                    // so that a single setData is called
+                    if (!reanimate) {
+                        data = plot.getData();
+                    }
+
                     growPhase = GrowPhase.NOT_PLOTTED_YET;
+                    startTime = +new Date() | 0;
                     dataOld = [];
-                    for (var j = 0; j < data.length; j++) {
+                    for (j = 0; j < data.length; j++) {
                         var dataj = data[j];
                         // deep cloning the original data
                         dataj.dataOrg = $.extend(true, [], dataj.data);
