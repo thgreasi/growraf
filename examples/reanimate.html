@@ -13,7 +13,6 @@
 	<script type="text/javascript">
 
 	$(function() {
-
 		var df = [[0,3],[1,5],[2,7],[3,8],[4,4],[5,10],[6,8],[7,5],[8,null],[9,-5],[10,-5]];
 		var df2 = [[0,1],[1,4],[2,2],[3,1],[4,8],[5,5],[6,4],[7,2],[8,null],[9,-2],[10,-2]];
 		var data = [
@@ -34,15 +33,15 @@
 		$placeholder.on('growFinished', function (){
 			var duration = (+new Date()) - animationStart;
 			$('.message').html('Finished after: ' + duration + 'ms');
+			$('#reanimateBtn').prop('disabled', false);
 		});
 
 		var animationStart = +new Date();
 		plot = $.plot($placeholder, $.extend(true, [], data), options);
 
-		// Add the Flot version string to the footer
-		usedInPage('#footer');
-
 		window.reanimate = function () {
+			$('#reanimateBtn').prop('disabled', true);
+			
 			dftemp = df;
 			df = df2;
 			df2 = dftemp;
@@ -64,8 +63,10 @@
 			plot.setData(data);
 			plot.setupGrid();
 			plot.draw();
+		};
 
-		}
+		// Add the Flot version string to the footer
+		usedInPage('#footer');
 	});
 
 	</script>
@@ -77,7 +78,7 @@
 	</div>
 
 	<div id="content">
-		<button type="button" onclick="reanimate()">re-animate</button>
+		<button id="reanimateBtn" type="button" onclick="reanimate()" disabled>re-animate</button>
 		<div class="demo-container">
 			<div id="placeholder" class="demo-placeholder"></div>
 		</div>

@@ -1,5 +1,5 @@
-Growraf (Re-Animate)
-====================
+Growraf
+=======
 
 Growraf (pronounced grow-rough) is a plugin for [flot charts](http://www.flotcharts.org), that produces smooth animations using requestAnimationFrame wherever possible.
 
@@ -16,6 +16,8 @@ Examples
 [Growraf + Resize example](http://thgreasi.github.io/growraf/resizegrowraf.html) in comparison with [Growing + Resize](http://thgreasi.github.io/growraf/resizegrowbug.html)
 
 [Growraf heavy data plots](http://thgreasi.github.io/growraf/heavyplot_growraf.html) in comparison with [Grow heavy data plots](http://thgreasi.github.io/growraf/heavyplot_grow.html) *note the time increase with more data/plots*
+
+[Growraf ReAnimate](http://thgreasi.github.io/growraf/reanimate.html) animating a plot between redraws.
 
 Extras
 ------
@@ -35,6 +37,13 @@ $.plot($placeholder, [{
         series: { grow: { active: true, duration: 2000 } }
 });
 ```
+
+ChangeLog
+---------
+*   **0.4.5** Introduced reanimate feature. Code restructuring, cleanups & performance improvements.
+
+*   **0.4.0** Initial version implementing rAF. Used for several unrecorded bug fixes and performance improvements.
+
 
 Frequently Asked
 ----------------
