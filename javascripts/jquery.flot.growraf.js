@@ -30,7 +30,7 @@ THE SOFTWARE.
 
 (function ($) {
     "use strict";
-    var pluginName = "growraf", pluginVersion = "0.4";
+    var pluginName = "growraf", pluginVersion = "0.4.5";
     var options = {
         series: {
             grow: {
@@ -39,11 +39,13 @@ THE SOFTWARE.
                 //steps: 100,
                 duration: 1000,
                 valueIndex: 1,
+                reanimate: true,
                 growings: [
                     {
                         valueIndex: 1,
                         stepMode: "linear",
-                        stepDirection: "up"
+                        stepDirection: "up",
+                        reanimate: "continue"
                     }
                 ],
                 debug: { active: false, createDocuTemplate: null }
@@ -70,6 +72,7 @@ THE SOFTWARE.
             var normTimePassed = Math.min(timePassed, dataj.grow.duration);
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
+
                 if (originalValue !== null) {
                     if (growing.stepDirection === 'up') {
                         dataj.data[i][growing.valueIndex] = originalValue / dataj.grow.duration * normTimePassed;
@@ -86,6 +89,7 @@ THE SOFTWARE.
             var normTimePassed = Math.min(timePassed, dataj.grow.duration);
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
+
                 if (originalValue !== null) {
                     if (growing.stepDirection === 'up') {
                         if (originalValue >= 0) {
@@ -112,6 +116,19 @@ THE SOFTWARE.
                     dataj.data[i][growing.valueIndex] = dataj.dataOrg[i][growing.valueIndex];
                 }
             }
+        },
+        reanimate: function (dataj, timePassed, growing, growPhase) {
+            var normTimePassed = Math.min(timePassed, dataj.grow.duration);
+            for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
+                var targetValue = dataj.dataOrg[i][growing.valueIndex];
+
+                if (targetValue === null) {
+                    dataj.data[i][growing.valueIndex] = null;
+                } else if (dataj.dataOld) {
+                    var oldData = dataj.dataOld[i][growing.valueIndex];
+                    dataj.data[i][growing.valueIndex] = oldData + (targetValue - oldData) / dataj.grow.duration * normTimePassed;
+                }
+            }
         }
     };
 
@@ -120,15 +137,22 @@ THE SOFTWARE.
     polyfillLocalRequestAnimationFrame();
 
     function init(plot) {
-        var done = false;
+        // State variables
+        var processSeriesDone = false;
+        var initGrowingLoop = true;
+        var startTime = 0, timePassed = 0, growPhase = GrowPhase.NOT_PLOTTED_YET;
+        var dataOld = [];
+
         var growfunc;
         var plt = plot;
         var data = null;
         var opt = null;
-        var serie = null;
-        plot.hooks.bindEvents.push(processbindEvents);
+        var serie = null;// for debug
         plot.hooks.drawSeries.push(processSeries);
+        plot.hooks.draw.push(drawDone);
+        plot.hooks.bindEvents.push(processbindEvents);
         plot.hooks.shutdown.push(shutdown);
+
 
         function createDocuTemplate() {
             var z, frm;
@@ -154,73 +178,129 @@ THE SOFTWARE.
                     serie = series;
                     opt.series.grow.debug.createDocuTemplate = createDocuTemplate;
                 }
-                if (done === false) {
+
+                var reanimate = false;
+                var j = 0;
+                if (opt.series.grow.reanimate && growPhase === GrowPhase.PLOTTED_LAST_FRAME) {
+                    // reset animation state
+                    processSeriesDone = false;
+                    growPhase = GrowPhase.NOT_PLOTTED_YET;
+                    startTime = 0;
+
+                    // restore old data from the tempory variable to the actual plot data
                     data = plot.getData();
-                    data.timePassed = 0;
-                    data.startTime = +new Date();
-                    data.growPhase = GrowPhase.NOT_PLOTTED_YET;
-                    for (var j = 0; j < data.length; j++) {
+                    var minLen = Math.min(data.length, dataOld.length);
+                    for (j = 0; j < minLen; j++) {
+                        data[j].dataOld = dataOld[j];
+                    }
+
+                    reanimate = true;
+                    initGrowingLoop = true;
+                }
+
+                if (!processSeriesDone) {
+                    // do not refetch the data in case of a reanimate,
+                    // so that a single setData is called
+                    if (!reanimate) {
+                        data = plot.getData();
+                    }
+
+                    growPhase = GrowPhase.NOT_PLOTTED_YET;
+                    startTime = +new Date() | 0;
+                    dataOld = [];
+                    for (j = 0; j < data.length; j++) {
                         var dataj = data[j];
                         // deep cloning the original data
                         dataj.dataOrg = $.extend(true, [], dataj.data);
-                        // set zero or null initial data values.
-                        for (var i = 0; i < dataj.data.length; i++) {
-                            dataj.data[i][valueIndex] = dataj.dataOrg[i][valueIndex] === null ? null : 0;
+                        // keep the data in a temporary array, in case a reanimation is requested
+                        dataOld.push(dataj.dataOrg);
+
+                        if (!reanimate) {
+                            // set zero or null initial data values.
+                            for (var i = 0; i < dataj.data.length; i++) {
+                                dataj.data[i][valueIndex] = dataj.dataOrg[i][valueIndex] === null ? null : 0;
+                            }
                         }
                     }
                     plot.setData(data);
-                    done = true;
+                    processSeriesDone = true;
                 }
             }
         }
 
-        function processbindEvents(plot, eventHolder) {
+        function drawDone(plot, canvascontext) {
+            if (initGrowingLoop === true) {
+                initiateGrowingLoop(plot);
+            }
+        }
+
+        function initiateGrowingLoop(plot) {
             opt = plot.getOptions();
             if (opt.series.grow.active === true) {
-                var d = plot.getData();
-                for (var j = 0; j < data.length; j++) {
-                    opt.series.grow.duration = Math.max(opt.series.grow.duration, d[j].grow.duration);
-                }
+                calculateMaxDuration(plot.getData(), opt);
 
-                d.startTime = +new Date();
+                startTime = +new Date() | 0;
                 growfunc = requestAnimationFrame(growingLoop);
-                if (isPluginRegistered('resize')) {
-                    plot.getPlaceholder().resize(onResize);
+            }
+            initGrowingLoop = false;
+        }
+
+        function calculateMaxDuration(data, opt) {
+            var maxDuration = opt.series.grow.duration;
+            for (var j = 0, datalen = data.length; j < datalen; j++) {
+                var datajDuration = data[j].grow.duration;
+                if (maxDuration < datajDuration) {
+                    maxDuration = datajDuration;
                 }
+            }
+            opt.series.grow.duration = maxDuration;
+        }
+
+        function processbindEvents(plot, eventHolder) {
+            if (isPluginRegistered('resize')) {
+                plot.getPlaceholder().resize(onResize);
             }
         }
 
         function growingLoop() {
-            data.timePassed = (+new Date()) - data.startTime;
-            for (var j = 0; j < data.length; j++) {
+            timePassed = (+new Date()) - startTime | 0;
+            for (var j = 0, datalen = data.length; j < datalen; j++) {
                 var dataj = data[j];
-                for (var g = 0; g < dataj.grow.growings.length; g++) {
-                    var growing = dataj.grow.growings[g];
+                var isReAnimation = dataj.dataOld && dataj.dataOld.length > 0;
 
+                for (var g = 0, glen = dataj.grow.growings.length; g < glen; g++) {
+                    var growing = dataj.grow.growings[g];
                     var func;
-                    if (typeof growing.stepMode === 'function') {
-                        func = growing.stepMode;
-                    } else {
-                        func = growFunctions[growing.stepMode];
-                        if (!func) {
+
+                    if (isReAnimation && growing.reanimate !== 'reinit') {
+                        if (typeof growing.reanimate === 'function') {
+                            func = growing.reanimate;
+                        } if (growing.reanimate === 'continue') {
+                            func = growFunctions.reanimate;
+                        } else {// if (growing.reanimate === 'none')
                             func = growFunctions.none;
                         }
+                    } else if (typeof growing.stepMode === 'function') {
+                        func = growing.stepMode;
+                    } else {
+                        // if stepMode does not exist, use 'none'
+                        func = growFunctions[growing.stepMode] || growFunctions.none;
                     }
-                    func(dataj, data.timePassed, growing, data.growPhase);
+                    func(dataj, timePassed, growing, growPhase);
                 }
             }
 
             plt.setData(data);
             plt.draw();
 
-            if (data.growPhase === GrowPhase.NOT_PLOTTED_YET) {
-                data.growPhase = GrowPhase.PLOTTED_SOME_FRAMES;
+            if (growPhase === GrowPhase.NOT_PLOTTED_YET) {
+                growPhase = GrowPhase.PLOTTED_SOME_FRAMES;
             }
 
-            if (data.timePassed < opt.series.grow.duration) {
+            if (timePassed < opt.series.grow.duration) {
                 growfunc = requestAnimationFrame(growingLoop);
             } else {
-                data.growPhase = GrowPhase.PLOTTED_LAST_FRAME;
+                growPhase = GrowPhase.PLOTTED_LAST_FRAME;
                 growfunc = null;
                 plt.getPlaceholder().trigger('growFinished');
             }
@@ -240,6 +320,10 @@ THE SOFTWARE.
 
         function shutdown(plot, eventHolder) {
             plot.getPlaceholder().unbind('resize', onResize);
+            if (growfunc) {
+                cancelAnimationFrame(growfunc);
+                growfunc = null;
+            }
         }
     }
 
