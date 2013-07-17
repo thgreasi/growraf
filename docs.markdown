@@ -39,29 +39,14 @@ The data format that should be used, is the one with the series objects:
 
 ```js
 var data = [
-	{ label: "serie #1", data: [[0,0], [1,1], [2,2]] },
-	{ label: "serie #2", data: [[0,2], [1,1], [2,0]] },
-	...
+    { label: "serie #1", data: [[0,0], [1,1], [2,2]] },
+    { label: "serie #2", data: [[0,2], [1,1], [2,0]] },
+    ...
 ];
 ```
 
 The format of a single series object is as follows:
 
-```js
-var serie1 = {
-	label: "serie #1",
-	data: [...],
-	grow: {
-		duration: 1000,
-		growings: [{
-            reanimate: "continue",
-            stepDirection: "up",
-            stepMode: "linear",
-            valueIndex: 1
-		}],
-		valueIndex: 1
-	}
-};
 
-var data = [ serie1, serie2, ... ];
-```
+
+A detailed explanation follows:
