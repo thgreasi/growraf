@@ -38,6 +38,13 @@ $.plot($placeholder, [{
 });
 ```
 
+Added the ability to [reanimate a plot](http://thgreasi.github.io/growraf/reanimate.html) to new datapoints, by using setData() & draw().
+
+API
+---
+Read the [Documentation here](http://thgreasi.github.io/growraf/docs.html) (work in progress).
+
+
 ChangeLog
 ---------
 *   **0.4.5** Introduced reanimate feature. Code restructuring, cleanups & performance improvements.
