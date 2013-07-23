@@ -21,7 +21,9 @@ Examples
 
 Extras
 ------
-Added a 'growFinished' event that is triggered on the plot's placeholder.
+*   Added the ability to [reanimate a plot](http://thgreasi.github.io/growraf/reanimate.html) to new datapoints, by using setData() & draw().
+
+*   Added a 'growFinished' event that is triggered on the plot's placeholder.
 
 ```js
 var $placeholder = $('#placeholder');
@@ -37,8 +39,6 @@ $.plot($placeholder, [{
         series: { grow: { active: true, duration: 2000 } }
 });
 ```
-
-Added the ability to [reanimate a plot](http://thgreasi.github.io/growraf/reanimate.html) to new datapoints, by using setData() & draw().
 
 API
 ---
