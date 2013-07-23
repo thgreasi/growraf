@@ -17,9 +17,7 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>
-          <a href="http://thgreasi.github.io/growraf/">Growraf</a>
-        </h1>
+        <h1>Growraf</h1>
         <p>A plugin for jquery.flot for smooth animations using requestAnimationFrame</p>
         <p class="view"><a href="https://github.com/thgreasi/growraf">View the Project on GitHub <small>thgreasi/growraf</small></a></p>
         <ul>
@@ -53,9 +51,10 @@ There is a new option named "duration" (in ms) that simplifies the rAF implement
 <h2>
 <a name="extras" class="anchor" href="#extras"><span class="octicon octicon-link"></span></a>Extras</h2>
 
-<p>Added a 'growFinished' event that is triggered on the plot's placeholder.</p>
-
-<div class="highlight"><pre><span class="kd">var</span> <span class="nx">$placeholder</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'#placeholder'</span><span class="p">);</span>
+<ul>
+<li><p>Added the ability to <a href="http://thgreasi.github.io/growraf/reanimate.html">reanimate a plot</a> to new datapoints, by using setData() &amp; draw().</p></li>
+<li><p>Added a 'growFinished' event that is triggered on the plot's placeholder.</p></li>
+</ul><div class="highlight"><pre><span class="kd">var</span> <span class="nx">$placeholder</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'#placeholder'</span><span class="p">);</span>
 <span class="nx">$placeholder</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'growFinished'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
    <span class="nx">alert</span><span class="p">(</span><span class="s1">'Grow Animation Finished'</span><span class="p">);</span>
 <span class="p">});</span>
@@ -68,6 +67,11 @@ There is a new option named "duration" (in ms) that simplifies the rAF implement
         <span class="nx">series</span><span class="o">:</span> <span class="p">{</span> <span class="nx">grow</span><span class="o">:</span> <span class="p">{</span> <span class="nx">active</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">duration</span><span class="o">:</span> <span class="mi">2000</span> <span class="p">}</span> <span class="p">}</span>
 <span class="p">});</span>
 </pre></div>
+
+<h2>
+<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h2>
+
+<p>Read the <a href="http://thgreasi.github.io/growraf/docs.html">Documentation here</a> (work in progress).</p>
 
 <h2>
 <a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a>ChangeLog</h2>
