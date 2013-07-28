@@ -42,7 +42,7 @@ $.plot($placeholder, [{
 
 API
 ---
-Read the [Documentation here](http://thgreasi.github.io/growraf/docs.html) (work in progress).
+Read the [Documentation here](http://thgreasi.github.io/growraf/docs.html).
 
 
 ChangeLog
