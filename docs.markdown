@@ -5,8 +5,6 @@ title: Growraf documentation
 
 # Documentation
 
-## !!work in progress!!
-
 ## Introduction
 
 As per the [flot documentation](https://github.com/flot/flot/blob/master/API.md#introduction),
@@ -26,13 +24,9 @@ This gives us a reference starting point to minimize misleads and misunderstandi
 var default_options = {
     series: {
         grow: {
-            /** Enables or disables the animation for the whole plot. */
             active: false,
-            /** The desired default duration for the animation */
             duration: 1000,
-            /** Enables or disables 'reanimation' for subsequent setData() & draw()'s. */
             reanimate: true,
-            /** The index, that each plot-data, holds the value to be plotted. */
             valueIndex: 1
         }
     }
@@ -42,11 +36,31 @@ var default_options = {
 var options = {
     series: {
         grow: {
-            active: false
+            active: true
         }
     }
 };
 {% endhighlight %}
+
+### A detailed explanation follows:
+
+**grow.active** (default: false)  
+Type: [Boolean](http://api.jquery.com/Types/#Boolean_Default)  
+Enables or Disables growraf for the specified plot.  
+**Note: this is the minimum option you should enable to get growraf working.**  
+
+**grow.duration** (default: 1000)  
+Type: [Integer](http://api.jquery.com/Types/#Integer)  
+The desired default duration for the animations.  
+
+**grow.reanimate** (default: true)  
+Type: [Boolean](http://api.jquery.com/Types/#Boolean_Default)  
+Enables or Disables animations for subsequent setData() & draw()'s on the plot.  
+
+**grow.valueIndex** (default: 1)  
+Type: [Integer](http://api.jquery.com/Types/#Integer)  
+The default value for the valueIndex property of each serie. The default index, that each serie, holds the values to be plotted.  
+
 
 ## Data Format
 
@@ -91,6 +105,7 @@ The desired duration for the animation of each serie.
 **grow.growings** (default: \[\])  
 Type: [Array](http://api.jquery.com/Types/#Array.3CType.3E_Notation)<[Object](http://api.jquery.com/Types/#Object)>
 An array with one or more objects, defining one or more animations (and its properties) to be applied to the serie.  
+When multiple growings are specified, they are applied in the provided order for each animation frame.  
 
 **grow.growings\[#\].reanimate** (default: 'continue')  
 Type: [String](http://api.jquery.com/Types/#String)/[Function](http://api.jquery.com/Types/#Function)  
@@ -98,7 +113,8 @@ The type of animation for replotting through setData() & draw(). Can be 'continu
 
 **grow.growings\[#\].stepDirection** (default: 'up')  
 Type: [String](http://api.jquery.com/Types/#String)  
-Defines the direction of the animation. Can be set to 'up' or 'down'. **Note**: for series that have data-points both above and below the horizontal axis, 'up' makes the serie animate away from it.  
+Defines the direction of the animation. Can be set to 'up' or 'down'.  
+**Note**: for series that have data-points both above and below the horizontal axis, 'up' makes the serie animate away from it.  
 
 **grow.growings\[#\].stepMode** (default: 'linear')  
 Type: [String](http://api.jquery.com/Types/#String)/[Function](http://api.jquery.com/Types/#Function)  
@@ -119,7 +135,7 @@ The index, that each serie, holds the values to be plotted.
 
 {% highlight javascript %}
 /** @enum {number} */
-var GrowPhase = {
+GrowPhase = {
     NOT_PLOTTED_YET: 0,
     PLOTTED_SOME_FRAMES: 1,
     PLOTTED_LAST_FRAME: 2
