@@ -47,8 +47,7 @@ THE SOFTWARE.
                         stepDirection: "up",
                         reanimate: "continue"
                     }
-                ],
-                debug: { active: false, createDocuTemplate: null }
+                ]
             }
         }
     };
@@ -147,40 +146,19 @@ THE SOFTWARE.
         var plt = plot;
         var data = null;
         var opt = null;
-        var serie = null;// for debug
         plot.hooks.drawSeries.push(processSeries);
         plot.hooks.draw.push(drawDone);
         plot.hooks.bindEvents.push(processbindEvents);
         plot.hooks.shutdown.push(shutdown);
 
 
-        function createDocuTemplate() {
-            var z, frm;
-            z = $.plot.JUMExample.docuObjectToTemplate(
-                [{ name: "data", tree: serie.data },
-                { name: "options.series.grow", tree: options.series.grow, takeDefault: true },
-                { name: "options.series.grow", tree: opt.series.grow },
-                { name: "options.series.editMode", tree: options.series.editMode, takeDefault: true },
-                { name: "options.series.editMode", tree: opt.series.editMode },
-                { name: "options.series.nearBy", tree: options.series.nearBy, takeDefault: true },
-                { name: "options.series.nearBy", tree: opt.series.nearBy }
-                ], pluginName);
-            $.plot.JUMExample.extendDocuObject(z, pluginName);
-            frm = $.plot.JUMExample.docuObjectToEdit(z, "");
-            return { data: z, form: frm };
-        }
-
         function processSeries(plot, canvascontext, series) {
             opt = plot.getOptions();
             var valueIndex = opt.series.grow.valueIndex;
             if (opt.series.grow.active === true) {
-                if (opt.series.grow.debug.active === true) {
-                    serie = series;
-                    opt.series.grow.debug.createDocuTemplate = createDocuTemplate;
-                }
-
                 var reanimate = false;
                 var j = 0;
+                
                 if (opt.series.grow.reanimate && growPhase === GrowPhase.PLOTTED_LAST_FRAME) {
                     // reset animation state
                     processSeriesDone = false;
