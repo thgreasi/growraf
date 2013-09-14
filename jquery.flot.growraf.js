@@ -69,44 +69,80 @@ THE SOFTWARE.
         },
         linear: function (dataj, timePassed, growing, growPhase) {
             var normTimePassed = Math.min(timePassed, dataj.grow.duration);
+            var stepDirNum = 0;
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
 
                 if (originalValue !== null) {
                     if (growing.stepDirection === 'up') {
-                        dataj.data[i][growing.valueIndex] = originalValue / dataj.grow.duration * normTimePassed;
+                        stepDirNum = 1;
+                    } else if (growing.stepDirection === 'down') {
+                        stepDirNum = 2;
                     }
-                    else if (growing.stepDirection === 'down') {
-                        dataj.data[i][growing.valueIndex] = originalValue + (dataj.yaxis.max - originalValue) / dataj.grow.duration * (dataj.grow.duration - normTimePassed);
-                    }
+                    dataj.data[i][growing.valueIndex] = linearAsm(stepDirNum, originalValue, normTimePassed, dataj.grow.duration, dataj.yaxis.max);
                 } else {
                     dataj.data[i][growing.valueIndex] = null;
                 }
             }
+            function linearAsm (stepDirection, originalValue, normTimePassed, growDuration, yaxismax) {
+                "use asm";
+                stepDirection = stepDirection | 0;
+                originalValue = +originalValue;
+                normTimePassed = +normTimePassed;
+                growDuration = +growDuration;
+                yaxismax = +yaxismax;
+
+                if (stepDirection === 1) {
+                    return +(originalValue / growDuration * normTimePassed);
+                }
+                else if (stepDirection === 2) {
+                    return +(originalValue + (yaxismax - originalValue) / growDuration * (growDuration - normTimePassed));
+                }
+                return +0;
+            }
         },
         maximum: function (dataj, timePassed, growing, growPhase) {
             var normTimePassed = Math.min(timePassed, dataj.grow.duration);
+            var stepDirNum = 0;
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
 
                 if (originalValue !== null) {
                     if (growing.stepDirection === 'up') {
-                        if (originalValue >= 0) {
-                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.max / dataj.grow.duration * normTimePassed);
-                        } else {
-                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.min / dataj.grow.duration * normTimePassed);
-                        }
+                        stepDirNum = 1;
                     }
                     else if (growing.stepDirection === 'down') {
-                        if (originalValue >= 0) {
-                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.max / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
-                        } else {
-                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.min / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
-                        }
+                        stepDirNum = 2;
                     }
+                    dataj.data[i][growing.valueIndex] = maximumAsm(stepDirNum, originalValue, normTimePassed, dataj.grow.duration, dataj.yaxis.max, dataj.yaxis.min);
                 } else {
                     dataj.data[i][growing.valueIndex] = null;
                 }
+            }
+            function maximumAsm (stepDirection, originalValue, normTimePassed, growDuration, yaxismax, yaxismin) {
+                "use asm";
+                stepDirection = stepDirection | 0;
+                originalValue = +originalValue;
+                normTimePassed = +normTimePassed;
+                growDuration = +growDuration;
+                yaxismax = +yaxismax;
+                yaxismin = +yaxismin;
+
+                if (stepDirection === 1) {
+                    if (originalValue >= 0) {
+                        return +(Math.min(originalValue, yaxismax / growDuration * normTimePassed));
+                    } else {
+                        return +(Math.max(originalValue, yaxismin / growDuration * normTimePassed));
+                    }
+                }
+                else if (stepDirection === 2) {
+                    if (originalValue >= 0) {
+                        return +(Math.max(originalValue, yaxismax / growDuration * (growDuration - normTimePassed)));
+                    } else {
+                        return +(Math.min(originalValue, yaxismin / growDuration * (growDuration - normTimePassed)));
+                    }
+                }
+                return +0;
             }
         },
         delay: function (dataj, timePassed, growing, growPhase) {
@@ -125,8 +161,17 @@ THE SOFTWARE.
                     dataj.data[i][growing.valueIndex] = null;
                 } else if (dataj.dataOld) {
                     var oldData = dataj.dataOld[i][growing.valueIndex];
-                    dataj.data[i][growing.valueIndex] = oldData + (targetValue - oldData) / dataj.grow.duration * normTimePassed;
+                    dataj.data[i][growing.valueIndex] = reanimateAsm(oldData, targetValue, normTimePassed, dataj.grow.duration);
                 }
+            }
+            function reanimateAsm (oldData, targetValue, normTimePassed, growDuration) {
+                "use asm";
+                oldData = +oldData;
+                targetValue = +targetValue;
+                normTimePassed = +normTimePassed;
+                growDuration = +growDuration;
+
+                return +(oldData + (targetValue - oldData) / growDuration * normTimePassed);
             }
         }
     };
