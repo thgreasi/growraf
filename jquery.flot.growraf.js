@@ -88,8 +88,8 @@ THE SOFTWARE.
         maximum: function (dataj, timePassed, growing, growPhase) {
             var percentage = Math.min(timePassed / dataj.grow.duration, 1);
 
-            var upMax = dataj.yaxis.max * percentage,
-                upMin = dataj.yaxis.min * percentage,
+            var upMax   = dataj.yaxis.max * percentage,
+                upMin   = dataj.yaxis.min * percentage,
                 downMax = dataj.yaxis.max * (1 - percentage),
                 downMin = dataj.yaxis.min * (1 - percentage);
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
