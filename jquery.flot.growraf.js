@@ -68,16 +68,17 @@ THE SOFTWARE.
             }
         },
         linear: function (dataj, timePassed, growing, growPhase) {
-            var normTimePassed = Math.min(timePassed, dataj.grow.duration);
+            var percentage = Math.min(timePassed / dataj.grow.duration, 1);
+
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
 
                 if (originalValue !== null) {
                     if (growing.stepDirection === 'up') {
-                        dataj.data[i][growing.valueIndex] = originalValue / dataj.grow.duration * normTimePassed;
+                        dataj.data[i][growing.valueIndex] = originalValue * percentage;
                     }
                     else if (growing.stepDirection === 'down') {
-                        dataj.data[i][growing.valueIndex] = originalValue + (dataj.yaxis.max - originalValue) / dataj.grow.duration * (dataj.grow.duration - normTimePassed);
+                        dataj.data[i][growing.valueIndex] = originalValue + (dataj.yaxis.max - originalValue) * (1 - percentage);
                     }
                 } else {
                     dataj.data[i][growing.valueIndex] = null;
@@ -85,23 +86,24 @@ THE SOFTWARE.
             }
         },
         maximum: function (dataj, timePassed, growing, growPhase) {
-            var normTimePassed = Math.min(timePassed, dataj.grow.duration);
+            var percentage = Math.min(timePassed / dataj.grow.duration, 1);
+
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
 
                 if (originalValue !== null) {
                     if (growing.stepDirection === 'up') {
                         if (originalValue >= 0) {
-                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.max / dataj.grow.duration * normTimePassed);
+                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.max * percentage);
                         } else {
-                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.min / dataj.grow.duration * normTimePassed);
+                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.min * percentage);
                         }
                     }
                     else if (growing.stepDirection === 'down') {
                         if (originalValue >= 0) {
-                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.max / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
+                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.max * (1 - percentage));
                         } else {
-                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.min / dataj.grow.duration * (dataj.grow.duration - normTimePassed));
+                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.min * (1 - percentage));
                         }
                     }
                 } else {
@@ -117,7 +119,8 @@ THE SOFTWARE.
             }
         },
         reanimate: function (dataj, timePassed, growing, growPhase) {
-            var normTimePassed = Math.min(timePassed, dataj.grow.duration);
+            var percentage = Math.min(timePassed / dataj.grow.duration, 1);
+
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var targetValue = dataj.dataOrg[i][growing.valueIndex];
 
@@ -125,7 +128,7 @@ THE SOFTWARE.
                     dataj.data[i][growing.valueIndex] = null;
                 } else if (dataj.dataOld) {
                     var oldData = dataj.dataOld[i][growing.valueIndex];
-                    dataj.data[i][growing.valueIndex] = oldData + (targetValue - oldData) / dataj.grow.duration * normTimePassed;
+                    dataj.data[i][growing.valueIndex] = oldData + (targetValue - oldData) * percentage;
                 }
             }
         }
