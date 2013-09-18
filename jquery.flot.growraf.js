@@ -88,22 +88,26 @@ THE SOFTWARE.
         maximum: function (dataj, timePassed, growing, growPhase) {
             var percentage = Math.min(timePassed / dataj.grow.duration, 1);
 
+            var upMax = dataj.yaxis.max * percentage,
+                upMin = dataj.yaxis.min * percentage,
+                downMax = dataj.yaxis.max * (1 - percentage),
+                downMin = dataj.yaxis.min * (1 - percentage);
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
 
                 if (originalValue !== null) {
                     if (growing.stepDirection === 'up') {
                         if (originalValue >= 0) {
-                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.max * percentage);
+                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, upMax);
                         } else {
-                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.min * percentage);
+                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, upMin);
                         }
                     }
                     else if (growing.stepDirection === 'down') {
                         if (originalValue >= 0) {
-                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, dataj.yaxis.max * (1 - percentage));
+                            dataj.data[i][growing.valueIndex] = Math.max(originalValue, downMax);
                         } else {
-                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, dataj.yaxis.min * (1 - percentage));
+                            dataj.data[i][growing.valueIndex] = Math.min(originalValue, downMin);
                         }
                     }
                 } else {
