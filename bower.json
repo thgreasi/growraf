@@ -1,0 +1,24 @@
+{
+  "name": "growraf",
+  "version": "0.4.5",
+  "description": "A plugin for jquery.flot for smooth animations using requestAnimationFrame",
+  "author": "https://github.com/thgreasi",
+  "license": "MIT",
+  "homepage": "http://thgreasi.github.io/growraf/",
+  "main": "./jquery.flot.growraf.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test*",
+    "demo*",
+    "gruntFile.js",
+    "package.json"
+  ],
+  "dependencies": {
+    "jquery": "~1.x",
+    "flot": "latest"
+  },
+  "devDependencies": {
+  }
+}
