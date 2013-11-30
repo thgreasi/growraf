@@ -13,9 +13,9 @@ Examples
 --------
 [Growraf example](http://thgreasi.github.io/growraf/growraf.html) in comparison with [Growing minor bugs](http://thgreasi.github.io/growraf/growbugs.html)
 
-[Growraf + Resize example](http://thgreasi.github.io/growraf/resizegrowraf.html) in comparison with [Growing + Resize](http://thgreasi.github.io/growraf/resizegrowbug.html)
-
 [Growraf heavy data plots](http://thgreasi.github.io/growraf/heavyplot_growraf.html) in comparison with [Grow heavy data plots](http://thgreasi.github.io/growraf/heavyplot_grow.html) *note the time increase with more data/plots*
+
+[Growraf + Resize example](http://thgreasi.github.io/growraf/resizegrowraf.html)
 
 [Growraf ReAnimate](http://thgreasi.github.io/growraf/reanimate.html) animating a plot between redraws.
 
