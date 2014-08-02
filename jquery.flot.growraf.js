@@ -29,8 +29,8 @@ THE SOFTWARE.
 */
 
 (function ($) {
-    "use strict";
-    var pluginName = "growraf", pluginVersion = "0.4.5";
+    'use strict';
+    var pluginName = 'growraf', pluginVersion = '0.4.5';
     var options = {
         series: {
             grow: {
@@ -43,9 +43,9 @@ THE SOFTWARE.
                 growings: [
                     {
                         valueIndex: 1,
-                        stepMode: "linear",
-                        stepDirection: "up",
-                        reanimate: "continue"
+                        stepMode: 'linear',
+                        stepDirection: 'up',
+                        reanimate: 'continue'
                     }
                 ]
             }
@@ -67,7 +67,7 @@ THE SOFTWARE.
                 }
             }
         },
-        linear: function (dataj, timePassed, growing, growPhase) {
+        linear: function (dataj, timePassed, growing/*, growPhase*/) {
             var percentage = Math.min(timePassed / dataj.grow.duration, 1);
 
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
@@ -85,7 +85,7 @@ THE SOFTWARE.
                 }
             }
         },
-        maximum: function (dataj, timePassed, growing, growPhase) {
+        maximum: function (dataj, timePassed, growing/*, growPhase*/) {
             var percentage = Math.min(timePassed / dataj.grow.duration, 1);
 
             var upMax   = dataj.yaxis.max * percentage,
@@ -115,14 +115,14 @@ THE SOFTWARE.
                 }
             }
         },
-        delay: function (dataj, timePassed, growing, growPhase) {
+        delay: function (dataj, timePassed, growing/*, growPhase*/) {
             if (timePassed >= dataj.grow.duration) {
                 for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                     dataj.data[i][growing.valueIndex] = dataj.dataOrg[i][growing.valueIndex];
                 }
             }
         },
-        reanimate: function (dataj, timePassed, growing, growPhase) {
+        reanimate: function (dataj, timePassed, growing/*, growPhase*/) {
             var percentage = Math.min(timePassed / dataj.grow.duration, 1);
 
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
@@ -159,7 +159,7 @@ THE SOFTWARE.
         plot.hooks.shutdown.push(shutdown);
 
 
-        function processSeries(plot, canvascontext, series) {
+        function processSeries(plot/*, canvascontext, series*/) {
             opt = plot.getOptions();
             var valueIndex = opt.series.grow.valueIndex;
             if (opt.series.grow.active === true) {
@@ -213,7 +213,7 @@ THE SOFTWARE.
             }
         }
 
-        function drawDone(plot, canvascontext) {
+        function drawDone(plot/*, canvascontext*/) {
             if (initGrowingLoop === true) {
                 initiateGrowingLoop(plot);
             }
@@ -241,7 +241,7 @@ THE SOFTWARE.
             opt.series.grow.duration = maxDuration;
         }
 
-        function processbindEvents(plot, eventHolder) {
+        function processbindEvents(plot/*, eventHolder*/) {
             if (isPluginRegistered('resize')) {
                 plot.getPlaceholder().resize(onResize);
             }
@@ -303,7 +303,7 @@ THE SOFTWARE.
             }
         }
 
-        function shutdown(plot, eventHolder) {
+        function shutdown(plot/*, eventHolder*/) {
             plot.getPlaceholder().unbind('resize', onResize);
             if (growfunc) {
                 cancelAnimationFrame(growfunc);
@@ -343,7 +343,7 @@ THE SOFTWARE.
                   window[vendors[x]+'CancelRequestAnimationFrame'];
         }
         if (!rAF) {
-            rAF = function(callback, element) {
+            rAF = function(callback/*, element*/) {
                 var currTime = +new Date();
                 var timeToCall = Math.max(0, 16 - (currTime - lastTime));
                 var id = window.setTimeout(function() {
