@@ -47,6 +47,8 @@ Read the [Documentation here](http://thgreasi.github.io/growraf/docs.html).
 
 ChangeLog
 ---------
+*   **0.4.6** Lint source with JSHint and release a bower package.
+
 *   **0.4.5** Introduced reanimate feature. Code restructuring, cleanups & performance improvements.
 
 *   **0.4.0** Initial version implementing rAF. Used for several unrecorded bug fixes and performance improvements.

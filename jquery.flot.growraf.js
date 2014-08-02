@@ -30,7 +30,7 @@ THE SOFTWARE.
 
 (function ($) {
     'use strict';
-    var pluginName = 'growraf', pluginVersion = '0.4.5';
+    var pluginName = 'growraf', pluginVersion = '0.4.6';
     var options = {
         series: {
             grow: {
