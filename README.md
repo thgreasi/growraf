@@ -79,3 +79,7 @@ Frequently Asked
     **Yes**, as long as exCanvas is provided, it should work.
 
     **BUT** instead of delivering a choppy animation, I strongly suggest you to disable animations for those browsers by checking if window.G_vmlCanvasManager is defined and setting the series.grow.active property to false.
+
+Powering
+--------
+[![speedcurve](http://thgreasi.github.io/growraf/images/powering/speedcurve.logo.png)](http://speedcurve.com/)
