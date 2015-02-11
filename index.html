@@ -30,92 +30,93 @@
       </header>
       <section>
         <h1>
-<a name="growraf" class="anchor" href="#growraf"><span class="octicon octicon-link"></span></a>Growraf</h1>
+          <a name="growraf" class="anchor" href="#growraf"><span class="octicon octicon-link"></span></a>Growraf
+        </h1>
 
-<p>Growraf (pronounced grow-rough) is a plugin for <a href="http://www.flotcharts.org">flot charts</a>, that produces smooth animations using requestAnimationFrame wherever possible.</p>
+        <p>Growraf (pronounced grow-rough) is a plugin for <a href="http://www.flotcharts.org">flot charts</a>, that produces smooth animations using requestAnimationFrame wherever possible.</p>
 
-<p>Its a fork of the <a href="https://github.com/jumjum123/JUMFlot">Growing</a> plugin for flot, from Jürgen Marsch.</p>
+        <p>Its a fork of the <a href="https://github.com/jumjum123/JUMFlot">Growing</a> plugin for flot, from Jürgen Marsch.</p>
 
-<p>The API is the same with Growing plugin except from the steps &amp; stepDelay combination.
-There is a new option named "duration" (in ms) that simplifies the rAF implementation and provides greater control.</p>
+        <p>The API is the same with Growing plugin except from the steps &amp; stepDelay combination.
+        There is a new option named "duration" (in ms) that simplifies the rAF implementation and provides greater control.</p>
 
-<h2>
-<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+        <h2>
+        <a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
 
-<p><a href="http://thgreasi.github.io/growraf/growraf.html">Growraf example</a> in comparison with <a href="http://thgreasi.github.io/growraf/growbugs.html">Growing minor bugs</a></p>
+        <p><a href="http://thgreasi.github.io/growraf/growraf.html">Growraf example</a> in comparison with <a href="http://thgreasi.github.io/growraf/growbugs.html">Growing minor bugs</a></p>
 
-<p><a href="http://thgreasi.github.io/growraf/heavyplot_growraf.html">Growraf heavy data plots</a> in comparison with <a href="http://thgreasi.github.io/growraf/heavyplot_grow.html">Grow heavy data plots</a> <em>note the time increase with more data/plots</em></p>
+        <p><a href="http://thgreasi.github.io/growraf/heavyplot_growraf.html">Growraf heavy data plots</a> in comparison with <a href="http://thgreasi.github.io/growraf/heavyplot_grow.html">Grow heavy data plots</a> <em>note the time increase with more data/plots</em></p>
 
-<p><a href="http://thgreasi.github.io/growraf/resizegrowraf.html">Growraf + Resize example</a></p>
+        <p><a href="http://thgreasi.github.io/growraf/resizegrowraf.html">Growraf + Resize example</a></p>
 
-<p><a href="http://thgreasi.github.io/growraf/reanimate.html">Growraf ReAnimate</a> animating a plot between redraws.</p>
+        <p><a href="http://thgreasi.github.io/growraf/reanimate.html">Growraf ReAnimate</a> animating a plot between redraws.</p>
 
-<h2>
-<a name="extras" class="anchor" href="#extras"><span class="octicon octicon-link"></span></a>Extras</h2>
+        <h2>
+        <a name="extras" class="anchor" href="#extras"><span class="octicon octicon-link"></span></a>Extras</h2>
 
-<ul>
-<li><p>Added the ability to <a href="http://thgreasi.github.io/growraf/reanimate.html">reanimate a plot</a> to new datapoints, by using setData() &amp; draw().</p></li>
-<li><p>Added a 'growFinished' event that is triggered on the plot's placeholder.</p></li>
-</ul><div class="highlight"><pre><span class="kd">var</span> <span class="nx">$placeholder</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'#placeholder'</span><span class="p">);</span>
-<span class="nx">$placeholder</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'growFinished'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-   <span class="nx">alert</span><span class="p">(</span><span class="s1">'Grow Animation Finished'</span><span class="p">);</span>
-<span class="p">});</span>
+        <ul>
+        <li><p>Added the ability to <a href="http://thgreasi.github.io/growraf/reanimate.html">reanimate a plot</a> to new datapoints, by using setData() &amp; draw().</p></li>
+        <li><p>Added a 'growFinished' event that is triggered on the plot's placeholder.</p></li>
+        </ul><div class="highlight"><pre><span class="kd">var</span> <span class="nx">$placeholder</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'#placeholder'</span><span class="p">);</span>
+        <span class="nx">$placeholder</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'growFinished'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+           <span class="nx">alert</span><span class="p">(</span><span class="s1">'Grow Animation Finished'</span><span class="p">);</span>
+        <span class="p">});</span>
 
-<span class="nx">$</span><span class="p">.</span><span class="nx">plot</span><span class="p">(</span><span class="nx">$placeholder</span><span class="p">,</span> <span class="p">[{</span>
-        <span class="nx">label</span><span class="o">:</span> <span class="s2">"linear"</span><span class="p">,</span>
-        <span class="nx">data</span><span class="o">:</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="cm">/*...,*/</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">]],</span>
-        <span class="nx">grow</span><span class="o">:</span> <span class="p">{</span> <span class="nx">growings</span><span class="o">:</span><span class="p">[</span> <span class="p">{</span> <span class="nx">stepMode</span><span class="o">:</span> <span class="s2">"maximum"</span> <span class="p">}</span> <span class="p">]</span> <span class="p">}</span>
-    <span class="p">}],</span> <span class="p">{</span>
-        <span class="nx">series</span><span class="o">:</span> <span class="p">{</span> <span class="nx">grow</span><span class="o">:</span> <span class="p">{</span> <span class="nx">active</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">duration</span><span class="o">:</span> <span class="mi">2000</span> <span class="p">}</span> <span class="p">}</span>
-<span class="p">});</span>
-</pre></div>
+        <span class="nx">$</span><span class="p">.</span><span class="nx">plot</span><span class="p">(</span><span class="nx">$placeholder</span><span class="p">,</span> <span class="p">[{</span>
+                <span class="nx">label</span><span class="o">:</span> <span class="s2">"linear"</span><span class="p">,</span>
+                <span class="nx">data</span><span class="o">:</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="cm">/*...,*/</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">]],</span>
+                <span class="nx">grow</span><span class="o">:</span> <span class="p">{</span> <span class="nx">growings</span><span class="o">:</span><span class="p">[</span> <span class="p">{</span> <span class="nx">stepMode</span><span class="o">:</span> <span class="s2">"maximum"</span> <span class="p">}</span> <span class="p">]</span> <span class="p">}</span>
+            <span class="p">}],</span> <span class="p">{</span>
+                <span class="nx">series</span><span class="o">:</span> <span class="p">{</span> <span class="nx">grow</span><span class="o">:</span> <span class="p">{</span> <span class="nx">active</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">duration</span><span class="o">:</span> <span class="mi">2000</span> <span class="p">}</span> <span class="p">}</span>
+        <span class="p">});</span>
+        </pre></div>
 
-<h2>
-<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h2>
+        <h2>
+        <a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h2>
 
-<p>Read the <a href="http://thgreasi.github.io/growraf/docs.html">Documentation here</a>.</p>
+        <p>Read the <a href="http://thgreasi.github.io/growraf/docs.html">Documentation here</a>.</p>
 
-<h2>
-<a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a>ChangeLog</h2>
+        <h2>
+        <a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a>ChangeLog</h2>
 
-<ul>
-<li><p><strong>0.4.5</strong> Introduced reanimate feature. Code restructuring, cleanups &amp; performance improvements.</p></li>
-<li><p><strong>0.4.0</strong> Initial version implementing rAF. Used for several unrecorded bug fixes and performance improvements.</p></li>
-</ul><h2>
-<a name="frequently-asked" class="anchor" href="#frequently-asked"><span class="octicon octicon-link"></span></a>Frequently Asked</h2>
+        <ul>
+        <li><p><strong>0.4.5</strong> Introduced reanimate feature. Code restructuring, cleanups &amp; performance improvements.</p></li>
+        <li><p><strong>0.4.0</strong> Initial version implementing rAF. Used for several unrecorded bug fixes and performance improvements.</p></li>
+        </ul><h2>
+        <a name="frequently-asked" class="anchor" href="#frequently-asked"><span class="octicon octicon-link"></span></a>Frequently Asked</h2>
 
-<ul>
-<li>
-<p><strong>Does it work on browsers not supporting requestAnimationFrame?</strong></p>
+        <ul>
+        <li>
+        <p><strong>Does it work on browsers not supporting requestAnimationFrame?</strong></p>
 
-<p><strong>Yes</strong>, Growraf checks if the current browser supports requestAnimationFrame (prefixed or not) and (if there is no support) fallbacks to setTimeout.</p>
+        <p><strong>Yes</strong>, Growraf checks if the current browser supports requestAnimationFrame (prefixed or not) and (if there is no support) fallbacks to setTimeout.</p>
 
-<p>Some of the browsers that the setTimeout polyfill is used include:</p>
+        <p>Some of the browsers that the setTimeout polyfill is used include:</p>
 
-<ul>
-<li>  IE &lt;= 8</li>
-<li>  Safari &lt;= 5.1</li>
-<li>  Opera (12.1 as of writing this)</li>
-<li>  Firefox &lt; 4.0</li>
-<li>  Chrome &lt; 10.0</li>
-</ul>
-<p>sources: <a href="http://caniuse.com/#search=requestAnimationFrame">caniuse</a> and <a href="https://developer.mozilla.org/en-US/docs/DOM/window.requestAnimationFrame">MDN</a></p>
+        <ul>
+        <li>  IE &lt;= 8</li>
+        <li>  Safari &lt;= 5.1</li>
+        <li>  Opera (12.1 as of writing this)</li>
+        <li>  Firefox &lt; 4.0</li>
+        <li>  Chrome &lt; 10.0</li>
+        </ul>
+        <p>sources: <a href="http://caniuse.com/#search=requestAnimationFrame">caniuse</a> and <a href="https://developer.mozilla.org/en-US/docs/DOM/window.requestAnimationFrame">MDN</a></p>
 
-<p>notes:</p>
+        <p>notes:</p>
 
-<ul>
-<li>  Based on <a href="https://gist.github.com/paulirish/1579671">paulirish's gist</a> for the setTimeout polyfill.</li>
-<li>  Does not polyfill requestAnimationFrame for the rest of page, just for growraf.</li>
-</ul>
-</li>
-<li>
-<p><strong>Does it work in oldIE?</strong></p>
+        <ul>
+        <li>  Based on <a href="https://gist.github.com/paulirish/1579671">paulirish's gist</a> for the setTimeout polyfill.</li>
+        <li>  Does not polyfill requestAnimationFrame for the rest of page, just for growraf.</li>
+        </ul>
+        </li>
+        <li>
+        <p><strong>Does it work in oldIE?</strong></p>
 
-<p><strong>Yes</strong>, as long as exCanvas is provided, it should work.</p>
+        <p><strong>Yes</strong>, as long as exCanvas is provided, it should work.</p>
 
-<p><strong>BUT</strong> instead of delivering a choppy animation, I strongly suggest you to disable animations for those browsers by checking if window.G_vmlCanvasManager is defined and setting the series.grow.active property to false.</p>
-</li>
-</ul>
+        <p><strong>BUT</strong> instead of delivering a choppy animation, I strongly suggest you to disable animations for those browsers by checking if window.G_vmlCanvasManager is defined and setting the series.grow.active property to false.</p>
+        </li>
+        </ul>
       </section>
     </div>
     <footer>
