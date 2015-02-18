@@ -19,6 +19,8 @@ Examples
 
 [Growraf ReAnimate](http://thgreasi.github.io/growraf/reanimate.html) animating a plot between redraws.
 
+[Growraf Horizontal Bars](http://thgreasi.github.io/growraf/horizontal.html) animating a plot of horizontal bars.
+
 Extras
 ------
 *   Added the ability to [reanimate a plot](http://thgreasi.github.io/growraf/reanimate.html) to new datapoints, by using setData() & draw().
