@@ -69,6 +69,10 @@ THE SOFTWARE.
         },
         linear: function (dataj, timePassed, growing/*, growPhase*/) {
             var percentage = Math.min(timePassed / dataj.grow.duration, 1);
+            var axis = dataj.yaxis;
+            if (dataj.bars && dataj.bars.show && dataj.bars.horizontal) {
+                axis = dataj.xaxis;
+            }
 
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
@@ -78,7 +82,7 @@ THE SOFTWARE.
                         dataj.data[i][growing.valueIndex] = originalValue * percentage;
                     }
                     else if (growing.stepDirection === 'down') {
-                        dataj.data[i][growing.valueIndex] = originalValue + (dataj.yaxis.max - originalValue) * (1 - percentage);
+                        dataj.data[i][growing.valueIndex] = originalValue + (axis.max - originalValue) * (1 - percentage);
                     }
                 } else {
                     dataj.data[i][growing.valueIndex] = null;
@@ -87,11 +91,15 @@ THE SOFTWARE.
         },
         maximum: function (dataj, timePassed, growing/*, growPhase*/) {
             var percentage = Math.min(timePassed / dataj.grow.duration, 1);
+            var axis = dataj.yaxis;
+            if (dataj.bars && dataj.bars.show && dataj.bars.horizontal) {
+                axis = dataj.xaxis;
+            }
 
-            var upMax   = dataj.yaxis.max * percentage,
-                upMin   = dataj.yaxis.min * percentage,
-                downMax = dataj.yaxis.max * (1 - percentage),
-                downMin = dataj.yaxis.min * (1 - percentage);
+            var upMax   = axis.max * percentage,
+                upMin   = axis.min * percentage,
+                downMax = axis.max * (1 - percentage),
+                downMin = axis.min * (1 - percentage);
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
 
@@ -201,6 +209,7 @@ THE SOFTWARE.
                         dataOld.push(dataj.dataOrg);
 
                         if (!reanimate) {
+                            valueIndex = dataj.grow.valueIndex;
                             // set zero or null initial data values.
                             for (var i = 0; i < dataj.data.length; i++) {
                                 dataj.data[i][valueIndex] = dataj.dataOrg[i][valueIndex] === null ? null : 0;
