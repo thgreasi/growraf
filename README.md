@@ -49,6 +49,8 @@ Read the [Documentation here](http://thgreasi.github.io/growraf/docs.html).
 
 ChangeLog
 ---------
+*   **0.5.0** Add support for horizontal bar charts.
+
 *   **0.4.6** Lint source with JSHint and release a bower package.
 
 *   **0.4.5** Introduced reanimate feature. Code restructuring, cleanups & performance improvements.
