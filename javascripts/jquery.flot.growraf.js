@@ -5,7 +5,7 @@ This is a fork of jquery.flot.grow by Thodoris Greasidis,
 that implements the growing animations using requestAnimationFrame
 and introduces varius bug fixes and improvements.
 
-Copyright (c) 2013 by Thodoris Greasidis
+Copyright (c) 2013,2014 by Thodoris Greasidis
 
 Copyright (c) 2010,2011,2012, 2013 by Juergen Marsch
 
@@ -29,8 +29,8 @@ THE SOFTWARE.
 */
 
 (function ($) {
-    "use strict";
-    var pluginName = "growraf", pluginVersion = "0.4.5";
+    'use strict';
+    var pluginName = 'growraf', pluginVersion = '0.5.0';
     var options = {
         series: {
             grow: {
@@ -43,9 +43,9 @@ THE SOFTWARE.
                 growings: [
                     {
                         valueIndex: 1,
-                        stepMode: "linear",
-                        stepDirection: "up",
-                        reanimate: "continue"
+                        stepMode: 'linear',
+                        stepDirection: 'up',
+                        reanimate: 'continue'
                     }
                 ]
             }
@@ -67,8 +67,12 @@ THE SOFTWARE.
                 }
             }
         },
-        linear: function (dataj, timePassed, growing, growPhase) {
+        linear: function (dataj, timePassed, growing/*, growPhase*/) {
             var percentage = Math.min(timePassed / dataj.grow.duration, 1);
+            var axis = dataj.yaxis;
+            if (dataj.bars && dataj.bars.show && dataj.bars.horizontal) {
+                axis = dataj.xaxis;
+            }
 
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
@@ -78,20 +82,24 @@ THE SOFTWARE.
                         dataj.data[i][growing.valueIndex] = originalValue * percentage;
                     }
                     else if (growing.stepDirection === 'down') {
-                        dataj.data[i][growing.valueIndex] = originalValue + (dataj.yaxis.max - originalValue) * (1 - percentage);
+                        dataj.data[i][growing.valueIndex] = originalValue + (axis.max - originalValue) * (1 - percentage);
                     }
                 } else {
                     dataj.data[i][growing.valueIndex] = null;
                 }
             }
         },
-        maximum: function (dataj, timePassed, growing, growPhase) {
+        maximum: function (dataj, timePassed, growing/*, growPhase*/) {
             var percentage = Math.min(timePassed / dataj.grow.duration, 1);
+            var axis = dataj.yaxis;
+            if (dataj.bars && dataj.bars.show && dataj.bars.horizontal) {
+                axis = dataj.xaxis;
+            }
 
-            var upMax   = dataj.yaxis.max * percentage,
-                upMin   = dataj.yaxis.min * percentage,
-                downMax = dataj.yaxis.max * (1 - percentage),
-                downMin = dataj.yaxis.min * (1 - percentage);
+            var upMax   = axis.max * percentage,
+                upMin   = axis.min * percentage,
+                downMax = axis.max * (1 - percentage),
+                downMin = axis.min * (1 - percentage);
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                 var originalValue = dataj.dataOrg[i][growing.valueIndex];
 
@@ -115,14 +123,14 @@ THE SOFTWARE.
                 }
             }
         },
-        delay: function (dataj, timePassed, growing, growPhase) {
+        delay: function (dataj, timePassed, growing/*, growPhase*/) {
             if (timePassed >= dataj.grow.duration) {
                 for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
                     dataj.data[i][growing.valueIndex] = dataj.dataOrg[i][growing.valueIndex];
                 }
             }
         },
-        reanimate: function (dataj, timePassed, growing, growPhase) {
+        reanimate: function (dataj, timePassed, growing/*, growPhase*/) {
             var percentage = Math.min(timePassed / dataj.grow.duration, 1);
 
             for (var i = 0, djdatalen = dataj.data.length; i < djdatalen; i++) {
@@ -159,7 +167,7 @@ THE SOFTWARE.
         plot.hooks.shutdown.push(shutdown);
 
 
-        function processSeries(plot, canvascontext, series) {
+        function processSeries(plot/*, canvascontext, series*/) {
             opt = plot.getOptions();
             var valueIndex = opt.series.grow.valueIndex;
             if (opt.series.grow.active === true) {
@@ -201,6 +209,7 @@ THE SOFTWARE.
                         dataOld.push(dataj.dataOrg);
 
                         if (!reanimate) {
+                            valueIndex = dataj.grow.valueIndex;
                             // set zero or null initial data values.
                             for (var i = 0; i < dataj.data.length; i++) {
                                 dataj.data[i][valueIndex] = dataj.dataOrg[i][valueIndex] === null ? null : 0;
@@ -213,7 +222,7 @@ THE SOFTWARE.
             }
         }
 
-        function drawDone(plot, canvascontext) {
+        function drawDone(plot/*, canvascontext*/) {
             if (initGrowingLoop === true) {
                 initiateGrowingLoop(plot);
             }
@@ -241,7 +250,7 @@ THE SOFTWARE.
             opt.series.grow.duration = maxDuration;
         }
 
-        function processbindEvents(plot, eventHolder) {
+        function processbindEvents(plot/*, eventHolder*/) {
             if (isPluginRegistered('resize')) {
                 plot.getPlaceholder().resize(onResize);
             }
@@ -303,7 +312,7 @@ THE SOFTWARE.
             }
         }
 
-        function shutdown(plot, eventHolder) {
+        function shutdown(plot/*, eventHolder*/) {
             plot.getPlaceholder().unbind('resize', onResize);
             if (growfunc) {
                 cancelAnimationFrame(growfunc);
@@ -343,7 +352,7 @@ THE SOFTWARE.
                   window[vendors[x]+'CancelRequestAnimationFrame'];
         }
         if (!rAF) {
-            rAF = function(callback, element) {
+            rAF = function(callback/*, element*/) {
                 var currTime = +new Date();
                 var timeToCall = Math.max(0, 16 - (currTime - lastTime));
                 var id = window.setTimeout(function() {
