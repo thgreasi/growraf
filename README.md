@@ -19,7 +19,7 @@ Examples
 
 [Growraf ReAnimate](http://thgreasi.github.io/growraf/reanimate.html) animating a plot between redraws.
 
-[Growraf Horizontal Bars](http://thgreasi.github.io/growraf/horizontal.html) animating a plot of horizontal bars.
+[Growraf Horizontal Bars](http://thgreasi.github.io/growraf/horizontal.html) ([pen](http://codepen.io/thgreasi/pen/rarxxV)) animating a plot of horizontal bars.
 
 Extras
 ------
