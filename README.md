@@ -11,7 +11,7 @@ There is a new option named "duration" (in ms) that simplifies the rAF implement
 
 Examples
 --------
-[Growraf example](http://thgreasi.github.io/growraf/growraf.html) in comparison with [Growing minor bugs](http://thgreasi.github.io/growraf/growbugs.html)
+[Growraf example](http://thgreasi.github.io/growraf/growraf.html) ([pen](http://codepen.io/thgreasi/pen/jEpWbR)) in comparison with [Growing minor bugs](http://thgreasi.github.io/growraf/growbugs.html)
 
 [Growraf heavy data plots](http://thgreasi.github.io/growraf/heavyplot_growraf.html) in comparison with [Grow heavy data plots](http://thgreasi.github.io/growraf/heavyplot_grow.html) *note the time increase with more data/plots*
 
