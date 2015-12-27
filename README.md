@@ -1,5 +1,6 @@
 Growraf
 =======
+[![npm](https://img.shields.io/npm/dm/growraf.svg)](https://www.npmjs.com/package/growraf)
 
 Growraf (pronounced grow-rough) is a plugin for [flot charts](http://www.flotcharts.org), that produces smooth animations using requestAnimationFrame wherever possible.
 
