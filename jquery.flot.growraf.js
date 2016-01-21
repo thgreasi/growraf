@@ -258,6 +258,7 @@ THE SOFTWARE.
 
         function growingLoop() {
             timePassed = (+new Date()) - startTime | 0;
+            if (data == null) { data = []; }
             for (var j = 0, datalen = data.length; j < datalen; j++) {
                 var dataj = data[j];
                 var isReAnimation = dataj.dataOld && dataj.dataOld.length > 0;
